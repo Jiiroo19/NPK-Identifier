@@ -37,7 +37,7 @@ class GraphGenerator(object):
         self.ax1.set_xlim(self.xmin, self.xmax)
         self.ax1.set_ylim(self.ymin, self.ymax)   
         self.ax1.set_xlabel("Wavelengths",fontsize=font_size_axis_title)
-        self.ax1.xaxis.set_label_coords(0.5,-.1)
+        self.ax1.xaxis.set_label_coords(0.5,-.12)
         self.ax1.set_ylabel("Reflectance",fontsize=font_size_axis_title)
         self.ax1.grid(True)
         self.ax1.patch.set_edgecolor('black')  

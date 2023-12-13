@@ -7,8 +7,7 @@ from kivy.properties import StringProperty, NumericProperty
 from libs.baseclass import lobby, calibrate_light, calibrate_bg, calibrate_dark, scanner
 from kivy.core.window import Window
 
-Window.fullscreen = False
-
+from kivy.config import Config
 
 
 class MyApp(MDApp):
@@ -45,5 +44,11 @@ class MyApp(MDApp):
 
 
 if __name__ == "__main__":
+    Config.set('graphics', 'width', '600')
+    Config.set('graphics', 'height', '400')
+    Config.set('graphics', 'resizable', False)
+    Config.write()
+    # Window.size = (600, 400)
 
+    # Window.fullscreen = False
     MyApp().run()

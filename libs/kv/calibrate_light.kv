@@ -1,2 +1,37 @@
+#:import MatplotFigure graph_widget
+#:kivy 2.2.1
+
 <CalibrateLight>
     name: 'cal_light'
+    figure_wgt3:figure_wgt3
+
+    BoxLayout:
+        orientation:'vertical'
+        MDLabel:
+            text: "Light Spectrum"
+            size_hint_y: .1
+            halign: 'center'
+        
+        MatplotFigure:
+            id: figure_wgt3
+        BoxLayout:
+            size_hint_y:0.2
+            Button:
+                text:"Back"
+                on_release:
+                    root.disable_clock()
+                    app.root.current = 'cal_bg'
+            Button:
+                text:"Capture" 
+                on_release:
+                    root.disable_clock()
+                    root.activate_button()
+
+            Button:
+                id: next_but
+                disabled: True
+                text:"Next"  
+                on_release:
+                    app.root.current = 'scanner'
+                                  
+        

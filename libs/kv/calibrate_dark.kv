@@ -1,13 +1,19 @@
 #:import MatplotFigure graph_widget
+#:kivy 2.2.1
 
 <CalibrateDark>
     name: 'cal_dark'
-    figure_wgt:figure_wgt
-    next_but:next_but
+    figure_wgt1:figure_wgt1
+
     BoxLayout:
         orientation:'vertical'
+        MDLabel:
+            text: "Dark Spectrum"
+            size_hint_y: .1
+            halign: 'center'
+        
         MatplotFigure:
-            id: figure_wgt
+            id: figure_wgt1
         BoxLayout:
             size_hint_y:0.2
             Button:

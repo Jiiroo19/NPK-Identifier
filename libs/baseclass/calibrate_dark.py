@@ -4,29 +4,18 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty
-
 from kivy.utils import platform
 
-#avoid conflict between mouse provider and touch (very important with touch device)
-#no need for android platform
-if platform != 'android':
-    from kivy.config import Config
-    Config.set('input', 'mouse', 'mouse,disable_on_activity')
-
-# from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 from graph_generator import GraphGenerator
-
 import numpy as np
 import pandas as pd
-
-# from libs.baseclass import graph_widget
 
 Builder.load_file('./libs/kv/calibrate_dark.kv')
 
 
 class CalibrateDark(Screen):
-    figure_wgt = ObjectProperty()
+    figure_wgt1 = ObjectProperty()
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.i=0
@@ -39,35 +28,37 @@ class CalibrateDark(Screen):
 
     def on_enter(self, *args):
         mygraph = GraphGenerator()
+
+        self.ids['next_but'].disabled = True
         
-        self.figure_wgt.figure = mygraph.fig
-        self.figure_wgt.axes = mygraph.ax1
-        self.figure_wgt.xmin= np.min(self.wave[0])
-        self.figure_wgt.xmax = np.max(self.wave[0])
-        self.figure_wgt.ymin=np.min(self.get_all_spec[0])
-        self.figure_wgt.ymax = np.max(self.get_all_spec[0])
-        self.figure_wgt.line1=mygraph.line1
+        self.figure_wgt1.figure = mygraph.fig
+        self.figure_wgt1.axes = mygraph.ax1
+        self.figure_wgt1.xmin= np.min(self.wave[0])
+        self.figure_wgt1.xmax = np.max(self.wave[0])
+        self.figure_wgt1.ymin=np.min(self.get_all_spec[0])
+        self.figure_wgt1.ymax = np.max(self.get_all_spec[0])
+        self.figure_wgt1.line1=mygraph.line1
         self.home()
-        self.figure_wgt.home()
+        self.figure_wgt1.home()
        
         Clock.schedule_interval(self.update_graph,1/60)
 
     def set_touch_mode(self,mode):
-        self.figure_wgt.touch_mode=mode
+        self.figure_wgt1.touch_mode=mode
 
     def home(self):
-        self.figure_wgt.home()
+        self.figure_wgt1.home()
         
     def update_graph(self,_):
         xdata= self.wave[0]
-        self.figure_wgt.line1.set_data(xdata,self.get_all_spec[self.i])
-        self.figure_wgt.ymax = np.max(self.get_all_spec[self.i])
-        self.figure_wgt.ymin = np.min(self.get_all_spec[self.i])
-        self.figure_wgt.xmax = np.max(xdata)
-        self.figure_wgt.xmin = np.min(xdata)
+        self.figure_wgt1.line1.set_data(xdata,self.get_all_spec[self.i])
+        self.figure_wgt1.ymax = np.max(self.get_all_spec[self.i])
+        self.figure_wgt1.ymin = np.min(self.get_all_spec[self.i])
+        self.figure_wgt1.xmax = np.max(xdata)
+        self.figure_wgt1.xmin = np.min(xdata)
         self.home()
-        self.figure_wgt.figure.canvas.draw_idle()
-        self.figure_wgt.figure.canvas.flush_events() 
+        self.figure_wgt1.figure.canvas.draw_idle()
+        self.figure_wgt1.figure.canvas.flush_events() 
         self.i+=1
     
     def activate_button(self):
