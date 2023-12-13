@@ -1,0 +1,17 @@
+<Lobby>
+    name: 'lobby'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: '10dp'
+        MDLabel:
+            text: 'NPK Identifier'
+            halign: 'center'
+            theme_text_color: 'Secondary'
+        MDFlatButton:
+            text: 'Start Scanning'
+            pos_hint: {'center_x': 0.5}
+            on_release: app.root.current = 'cal_dark'
+        MDFlatButton:
+            text: 'Exit'
+            pos_hint: {'center_x': 0.5}
+            on_release: app.stop()
