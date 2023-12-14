@@ -5,7 +5,7 @@
     name: 'cal_dark'
     figure_wgt1:figure_wgt1
 
-    BoxLayout:
+    MDBoxLayout:
         orientation:'vertical'
         MDLabel:
             text: "Dark Spectrum"
@@ -14,23 +14,44 @@
         
         MatplotFigure:
             id: figure_wgt1
-        BoxLayout:
-            size_hint_y:0.2
-            Button:
+        MDBoxLayout:
+            size_hint_y: 0.2
+            padding: '10dp'
+            spacing: 5
+            MDRectangleFlatButton:
+                size_hint_x: 0.333
+                size_hint_y: None
                 text:"Back"
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: "black"
+                md_bg_color: 'grey'
                 on_release:
                     root.disable_clock()
                     app.root.current = 'lobby'
-            Button:
+
+            MDRectangleFlatButton:
+                size_hint_x: 0.333
+                size_hint_y: None
                 text:"Capture" 
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: "black"
+                md_bg_color: 'grey'
                 on_release:
                     root.disable_clock()
                     root.activate_button()
 
-            Button:
+            MDRectangleFlatButton:
                 id: next_but
                 disabled: True
-                text:"Next"  
+                size_hint_x: 0.333
+                size_hint_y: None
+                text:"Next" 
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: "black" 
+                md_bg_color: 'grey'
                 on_release:
                     app.root.current = 'cal_bg'
                                   

@@ -5,7 +5,7 @@
     name: 'cal_light'
     figure_wgt3:figure_wgt3
 
-    BoxLayout:
+    MDBoxLayout:
         orientation:'vertical'
         MDLabel:
             text: "Light Spectrum"
@@ -14,23 +14,46 @@
         
         MatplotFigure:
             id: figure_wgt3
-        BoxLayout:
-            size_hint_y:0.2
-            Button:
+
+        MDBoxLayout:
+            size_hint_y: 0.2
+            spacing: 5
+            padding: '10dp'
+            
+            MDRectangleFlatButton:
+                size_hint_x: 0.333
+                size_hint_y: None
                 text:"Back"
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: "black"
+                md_bg_color: 'grey'
                 on_release:
                     root.disable_clock()
                     app.root.current = 'cal_bg'
-            Button:
-                text:"Capture" 
+
+            MDRectangleFlatButton:
+                size_hint_x: 0.333
+                size_hint_y: None
+                text:"Capture"
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: "black" 
+                md_bg_color: 'grey'
                 on_release:
                     root.disable_clock()
                     root.activate_button()
 
-            Button:
+            MDRectangleFlatButton:
                 id: next_but
                 disabled: True
-                text:"Next"  
+                size_hint_x: 0.333
+                size_hint_y: None
+                text:"Next"
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: "black"
+                md_bg_color: 'grey'
                 on_release:
                     app.root.current = 'scanner'
                                   

@@ -1,0 +1,4 @@
+#Ignore all csv
+*.csv
+__pycache__
+.vscode
