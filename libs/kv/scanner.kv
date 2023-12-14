@@ -11,15 +11,32 @@
             text: "Measure NPK"
             size_hint_y: .1
             halign: 'center'
-        
+
         MatplotFigure:
             id: figure_wgt4
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.2
+            padding: "10dp"
+            spacing: 5
+            halign: 'center'
+
+            MDLabel:
+                text: "N: 0 ppm"
+
+            MDLabel:
+                text: "P: 0 ppm"
+
+            MDLabel:
+                text: "K: 0 ppm"
+
 
         MDBoxLayout:
             size_hint_y: 0.2
             spacing: 5
             padding: '10dp'
-            
+
             MDRectangleFlatButton:
                 size_hint_x: 0.333
                 size_hint_y: None
@@ -40,7 +57,7 @@
                 text:"Capture"
                 theme_text_color: "Custom"
                 text_color: "black"
-                line_color: "black" 
+                line_color: "black"
                 md_bg_color: 'grey'
                 on_release:
                     root.disable_clock()
@@ -59,6 +76,3 @@
                 on_release:
                     root.activate_button()
                     root.on_enter()
-                    
-                                  
-        
