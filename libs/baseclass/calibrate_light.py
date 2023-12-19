@@ -66,3 +66,4 @@ class CalibrateLight(Screen):
 
     def disable_clock(self):
         Clock.unschedule(self.update_graph)
+        
