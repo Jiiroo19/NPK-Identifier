@@ -61,8 +61,14 @@ class CalibrateLight(Screen):
         self.figure_wgt3.figure.canvas.flush_events() 
         self.i+=1
     
-    def activate_button(self):
-        self.ids['next_but'].disabled = False
+    def activate_next(self):
+        self.ids['next_but'].disabled = not self.ids['next_but'].disabled
+    
+    def activate_capture(self):
+        self.ids['capture'].disabled = not self.ids['capture'].disabled
+    
+    def activate_rescan(self):
+        self.ids['rescan'].disabled = not self.ids['rescan'].disabled
 
     def disable_clock(self):
         Clock.unschedule(self.update_graph)
