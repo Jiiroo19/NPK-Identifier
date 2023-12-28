@@ -30,17 +30,36 @@
                 on_release:
                     root.disable_clock()
                     app.root.current = 'cal_dark'
+                    
             MDRectangleFlatButton:
-                text:"Capture" 
+                id: capture
                 size_hint_x: 0.333
                 size_hint_y: None
+                text:"Capture" 
                 theme_text_color: "Custom"
                 text_color: "black"
                 line_color: "black"
                 md_bg_color: 'grey'
                 on_release:
                     root.disable_clock()
-                    root.activate_button()
+                    root.activate_next()
+                    root.activate_rescan()
+                    root.activate_capture()
+            
+            MDRectangleFlatButton:
+                id: rescan
+                disabled: True
+                size_hint_x: 0.333
+                size_hint_y: None
+                text:"Rescan" 
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: "black"
+                md_bg_color: 'grey'
+                on_release:
+                    root.activate_rescan()
+                    root.on_enter()
+                    root.activate_capture()
 
             MDRectangleFlatButton:
                 id: next_but
