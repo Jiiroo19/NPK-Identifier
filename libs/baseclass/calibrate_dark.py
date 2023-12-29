@@ -102,7 +102,7 @@ class CalibrateDark(Screen):
         self.ids['capture_dark'].disabled = not self.ids['capture_dark'].disabled
 
     def disable_clock(self):
-        self.insert_data('dark', np.array(self.spec.intensities(False,True), dtype=np.float64).reshape(-1, 1))
+        self.insert_data('dark', np.array(self.spec.intensities(False,True), dtype=np.float32).reshape(-1, 1))
         Clock.unschedule(self.update_graph)
     
     def on_leave(self, *args):

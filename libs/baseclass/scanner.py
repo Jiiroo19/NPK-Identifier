@@ -85,7 +85,7 @@ class Scanner(Screen):
         result = self.cursor.fetchone()
         if result:
             # Convert bytes back to NumPy array when retrieving from the database
-            return np.frombuffer(result[0], dtype=np.float64)  # Adjust dtype based on your data type
+            return np.frombuffer(result[0], dtype=np.float32)  # Adjust dtype based on your data type
         else:
             return None
 
@@ -111,7 +111,7 @@ class Scanner(Screen):
         
     def update_graph(self,_):
         xdata= self.spec.wavelengths()
-        intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float64))
+        intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32))
         self.figure_wgt4.line1.set_data(xdata,intensities)
         self.figure_wgt4.ymax = np.max(intensities)
         self.figure_wgt4.ymin = np.min(intensities)
@@ -126,7 +126,7 @@ class Scanner(Screen):
         self.ids['capture_button'].disabled = not self.ids['capture_button'].disabled
 
     def disable_clock(self):
-        self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float64)))
+        self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
         Clock.unschedule(self.update_graph)
 
     def capture_model(self, final_reflectance):
@@ -136,27 +136,27 @@ class Scanner(Screen):
         tf.random.set_seed(42)
 
         scaler = StandardScaler()
-        input_data = np.array(final_reflectance).reshape(1, 128, 1)
+        input_data = np.array(final_reflectance).reshape(1, 128)
         # Reshape to 2D for StandardScaler
         reshaped_input_data = input_data.reshape(-1, 1)
 
         # reflectance_scaled = scaler.fit_transform(reshaped_input_data)
-        reflectance_scaled = scaler.fit_transform(reshaped_input_data).reshape(1, 128, 1)
+        reflectance_scaled = scaler.fit_transform(reshaped_input_data).reshape(1, 128)
 
         tf.keras.backend.clear_session()
         model_OM = tf.keras.models.load_model("./assets/models/final_regression_model_OM.h5")
         device_pred_OM = model_OM.predict(reflectance_scaled)
         self.label_OM.text = f"N: {round(float(device_pred_OM[0][0]),2)} ppm"
 
-        tf.keras.backend.clear_session()
-        model_P = tf.keras.models.load_model("./assets/models/final_regression_model_P.h5")
-        device_pred_P = model_P.predict(reflectance_scaled)
-        self.label_P.text = f"P: {round(float(device_pred_P[0][0]), 2)} ppm"
+        # tf.keras.backend.clear_session()
+        # model_P = tf.keras.models.load_model("./assets/models/final_regression_model_P.h5")
+        # device_pred_P = model_P.predict(reflectance_scaled)
+        # self.label_P.text = f"P: {round(float(device_pred_P[0][0]), 2)} ppm"
 
-        tf.keras.backend.clear_session()
-        model_K = tf.keras.models.load_model("./assets/models/final_regression_model_K.h5")
-        device_pred_K = model_K.predict(reflectance_scaled)
-        self.label_K.text = f"K: {round(float(device_pred_K[0][0]), 2)} ppm"
+        # tf.keras.backend.clear_session()
+        # model_K = tf.keras.models.load_model("./assets/models/final_regression_model_K.h5")
+        # device_pred_K = model_K.predict(reflectance_scaled)
+        # self.label_K.text = f"K: {round(float(device_pred_K[0][0]), 2)} ppm"
 
 
     def on_leave(self, *args):
