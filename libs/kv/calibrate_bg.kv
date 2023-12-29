@@ -42,7 +42,7 @@
                     app.root.current = 'cal_dark'
                     
             MDRectangleFlatButton:
-                id: capture
+                id: capture_bg
                 size_hint_x: 0.333
                 size_hint_y: None
                 text:"Capture" 
@@ -53,12 +53,10 @@
                 md_bg_color: 'white'
                 on_release:
                     root.disable_clock()
-                    root.activate_next()
-                    root.activate_rescan()
                     root.activate_capture()
             
             MDRectangleFlatButton:
-                id: rescan
+                id: rescan_bg
                 disabled: True
                 size_hint_x: 0.333
                 size_hint_y: None
@@ -71,10 +69,9 @@
                 on_release:
                     root.activate_rescan()
                     root.on_enter()
-                    root.activate_capture()
 
             MDRectangleFlatButton:
-                id: next_but
+                id: next_bg
                 disabled: True
                 size_hint_x: 0.333
                 size_hint_y: None
