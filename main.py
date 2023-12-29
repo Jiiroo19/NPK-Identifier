@@ -12,6 +12,7 @@ from kivy.config import Config
 import RPi.GPIO as GPIO
 from seabreeze.spectrometers import Spectrometer
 import atexit
+import os
 
 
 
@@ -54,4 +55,5 @@ class MyApp(MDApp):
 
 
 if __name__ == "__main__":
+    os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     MyApp().run()
