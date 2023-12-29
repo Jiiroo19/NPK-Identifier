@@ -11,6 +11,7 @@ from kivy.config import Config
 
 import RPi.GPIO as GPIO
 from seabreeze.spectrometers import Spectrometer
+import atexit
 
 
 
@@ -27,9 +28,11 @@ class MyApp(MDApp):
 
     def build(self):
         kv_run = Builder.load_file("main.kv")
+        atexit.register(self.on_exit)
         return kv_run
         
-
+    def on_exit(self):
+        self.spec.close()
 
     def colors(self, color_code):
         if color_code == 0:
