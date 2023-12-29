@@ -180,29 +180,10 @@ class Scanner(Screen):
         output_data_P = interpreter.get_tensor(output_details[0]['index'])
         self.label_P.text = f"P: {round(float(output_data_P[0][0]), 2)} ppm"
 
-
-        tf.keras.backend.clear_session()
-
         # load lite model of K
-        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_OM.tflite")
-        interpreter.allocate_tensors()
-
-        input_details = interpreter.get_input_details()
-        output_details = interpreter.get_output_details()
-
-        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
-        interpreter.set_tensor(input_details[0]['index'], input_data)
-
-        interpreter.invoke()
-
-        output_data_OM = interpreter.get_tensor(output_details[0]['index'])
-        self.label_OM.text = f"N: {round(float(output_data_OM[0][0]),2)} ppm"
-
-
-
         tf.keras.backend.clear_session()
 
-        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_P.tflite")
+        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_K.tflite")
         interpreter.allocate_tensors()
 
         input_details = interpreter.get_input_details()
@@ -220,5 +201,6 @@ class Scanner(Screen):
     def on_leave(self, *args):
         self.ids['rescan_button'].disabled = True
         self.ids['capture_button'].disabled = False
+        GPIO.output(12, GPIO.LOW)
         self.conn.close()
         return super().on_leave(*args)
