@@ -126,7 +126,7 @@ class Scanner(Screen):
         self.ids['capture_button'].disabled = not self.ids['capture_button'].disabled
 
     def disable_clock(self):
-        self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
+        self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float64)))
         Clock.unschedule(self.update_graph)
 
     def capture_model(self, final_reflectance):
