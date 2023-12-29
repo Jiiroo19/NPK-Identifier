@@ -20,7 +20,7 @@ from tensorflow import keras
 from keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 Builder.load_file('./libs/kv/scanner.kv')
 
@@ -36,7 +36,7 @@ class Scanner(Screen):
 
     def on_enter(self, *args):
         # set the lights to high
-        GPIO.output(12, GPIO.HIGH)
+        # GPIO.output(12, GPIO.HIGH)
         # initial text label for NPK
         self.label_OM.text = "N: - ppm"
         self.label_P.text = "P: - ppm"
