@@ -8,7 +8,7 @@ from graph_generator import GraphGenerator
 import numpy as np
 import pandas as pd
 
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 Builder.load_file('./libs/kv/calibrate_bg.kv')
@@ -21,6 +21,9 @@ class CalibrateBG(Screen):
 
 
     def on_enter(self, *args):
+        # set the lights to high
+        GPIO.output(12, GPIO.LOW)
+
         # access the NIR
         self.spec = MDApp.get_running_app().spec
 
@@ -38,7 +41,7 @@ class CalibrateBG(Screen):
         self.home()
         self.figure_wgt2.home()
 
-        # GPIO.output(12, GPIO.LOW)
+        
        
         Clock.schedule_interval(self.update_graph,.1)
 

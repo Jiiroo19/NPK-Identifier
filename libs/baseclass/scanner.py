@@ -12,6 +12,8 @@ from graph_generator import GraphGenerator
 import numpy as np
 import pandas as pd
 
+import RPi.GPIO as GPIO
+
 Builder.load_file('./libs/kv/scanner.kv')
 
 
@@ -22,6 +24,9 @@ class Scanner(Screen):
 
 
     def on_enter(self, *args):
+        # set the lights to high
+        GPIO.output(12, GPIO.HIGH)
+
         # access the NIR
         self.spec = MDApp.get_running_app().spec
         self.spec.open()
@@ -67,9 +72,11 @@ class Scanner(Screen):
         self.ids['rescan_button'].disabled = not self.ids['rescan_button'].disabled
         self.ids['capture_button'].disabled = not self.ids['capture_button'].disabled
 
-    def home_button(self):
-        self.ids['rescan_button'].disabled = True
-        self.ids['capture_button'].disabled = False
-
     def disable_clock(self):
         Clock.unschedule(self.update_graph)
+
+    def on_leave(self, *args):
+        self.ids['rescan_button'].disabled = True
+        self.ids['capture_button'].disabled = False
+        GPIO.output(12, GPIO.HIGH)
+        return super().on_leave(*args)

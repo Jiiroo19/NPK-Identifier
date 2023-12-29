@@ -8,7 +8,7 @@ from graph_generator import GraphGenerator
 import numpy as np
 import pandas as pd
 
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 Builder.load_file('./libs/kv/calibrate_dark.kv')
@@ -20,6 +20,9 @@ class CalibrateDark(Screen):
         super().__init__(**kwargs)
 
     def on_enter(self, *args):
+        # set the lights to low
+        GPIO.output(12, GPIO.LOW)
+
         # access the NIR
         self.spec = MDApp.get_running_app().spec
 
@@ -37,8 +40,7 @@ class CalibrateDark(Screen):
         self.home()
         self.figure_wgt1.home()
 
-        ## set the lights to low
-        # GPIO.output(12, GPIO.LOW)
+        
        
         Clock.schedule_interval(self.update_graph,.1)
 
