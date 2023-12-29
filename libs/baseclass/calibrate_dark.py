@@ -106,9 +106,9 @@ class CalibrateDark(Screen):
         Clock.unschedule(self.update_graph)
     
     def on_leave(self, *args):
-        self.ids['next_dark'].disabled = not self.ids['next_dark'].disabled
-        self.ids['capture_dark'].disabled = not self.ids['capture_dark'].disabled
-        self.ids['rescan_dark'].disabled = not self.ids['rescan_dark'].disabled
+        self.ids['next_dark'].disabled = True
+        self.ids['capture_dark'].disabled = False
+        self.ids['rescan_dark'].disabled = True
         self.conn.close()
         return super().on_leave(*args)
 

@@ -37,6 +37,7 @@ class MyApp(MDApp):
         
     def on_exit(self):
         self.spec.close()
+        GPIO.output(12, GPIO.LOW)
         GPIO.cleanup()
 
     def colors(self, color_code):
