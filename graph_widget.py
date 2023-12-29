@@ -1466,7 +1466,7 @@ Builder.load_string('''
 <MatplotFigure>
     canvas:
         Color:
-            rgba: (1, 1, 1, 1)
+            rgba: (0.7215, 0.451, 0.2, 1)
         Rectangle:
             pos: self.pos
             size: self.size

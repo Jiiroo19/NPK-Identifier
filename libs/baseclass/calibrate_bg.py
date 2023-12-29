@@ -12,6 +12,7 @@ import sqlite3
 # import RPi.GPIO as GPIO
 
 
+
 Builder.load_file('./libs/kv/calibrate_bg.kv')
 
 
@@ -47,6 +48,7 @@ class CalibrateBG(Screen):
         self.figure_wgt2.ymin=np.min(self.spec.intensities(False,True))
         self.figure_wgt2.ymax = np.max(self.spec.intensities(False,True))
         self.figure_wgt2.line1=mygraph.line1
+        mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt2.home()
 

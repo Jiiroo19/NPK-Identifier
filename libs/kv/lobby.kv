@@ -1,12 +1,27 @@
 <Lobby>
     name: 'lobby'
+
+    canvas.before:
+        Color:
+            rgba: 0.7215, 0.451, 0.2, 1  # First color (in RGBA)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: ''
+
     MDBoxLayout:
         orientation: 'vertical'
         padding: '10dp'
-        MDLabel:
-            text: 'NPK Identifier'
-            halign: 'center'
-            theme_text_color: 'Secondary'
+        Image:
+            source: 'logo.png' 
+            size_hint: None, None
+            size: dp(450), dp(450)  # Adjust the size as needed
+            pos_hint: {'center_x': 0.5}
+    
+        # MDLabel:
+        #     text: 'NPK Identifier'
+        #     halign: 'center'
+        #     theme_text_color: 'Secondary'
         MDBoxLayout:
             
             size_hint_y: .2
@@ -17,19 +32,21 @@
                 size_hint_y: None
                 text: 'Exit'
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release: 
-                    app.spec.close()
-                    app.stop()
+                  app.stop()
+                  app.spec.close()
             
             MDRectangleFlatButton:
                 size_hint_x: 1
                 size_hint_y: None
                 text: 'Start Scanning'
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release: app.root.current = 'cal_dark'

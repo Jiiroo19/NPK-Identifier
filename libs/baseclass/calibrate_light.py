@@ -47,6 +47,7 @@ class CalibrateLight(Screen):
         self.figure_wgt3.ymin=np.min(self.spec.intensities(False,True))
         self.figure_wgt3.ymax = np.max(self.spec.intensities(False,True))
         self.figure_wgt3.line1=mygraph.line1
+        mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt3.home()
 
