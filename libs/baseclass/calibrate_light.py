@@ -7,6 +7,7 @@ from kivy.properties import ObjectProperty
 from graph_generator import GraphGenerator
 import numpy as np
 import pandas as pd
+import sqlite3
 
 import RPi.GPIO as GPIO
 
@@ -23,6 +24,16 @@ class CalibrateLight(Screen):
     def on_enter(self, *args):
         # set the lights to high
         GPIO.output(12, GPIO.HIGH)
+        self.conn = sqlite3.connect('spectral_calib.db')
+        self.cursor = self.conn.cursor()
+        # Create a table to store spectral data
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS SpectralData (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL,
+                data BLOB NOT NULL
+            )
+        ''')
 
         # access the NIR
         self.spec = MDApp.get_running_app().spec
@@ -38,12 +49,28 @@ class CalibrateLight(Screen):
         self.figure_wgt3.ymin=np.min(self.spec.intensities(False,True))
         self.figure_wgt3.ymax = np.max(self.spec.intensities(False,True))
         self.figure_wgt3.line1=mygraph.line1
+        mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt3.home()
 
         
        
         Clock.schedule_interval(self.update_graph,.1)
+
+    # Function to delete existing data of a certain type
+    def delete_data(self):
+        self.cursor.execute('''
+            DELETE FROM SpectralData WHERE type = ?
+        ''', ("light",))
+        self.conn.commit()
+
+    # Function to insert data into the table
+    def insert_data(self, data_type, spectral_data):
+        self.delete_data()
+        self.cursor.execute('''
+            INSERT INTO SpectralData (type, data) VALUES (?, ?)
+        ''', (data_type, spectral_data))
+        self.conn.commit()
 
     def set_touch_mode(self,mode):
         self.figure_wgt3.touch_mode=mode
@@ -74,10 +101,12 @@ class CalibrateLight(Screen):
         self.ids['capture_light'].disabled = not self.ids['capture_light'].disabled
 
     def disable_clock(self):
+        self.insert_data('light', np.array(self.spec.intensities(False,True), dtype=np.float32).reshape(-1, 1))
         Clock.unschedule(self.update_graph)
     
     def on_leave(self, *args):
         self.ids['next_light'].disabled = not self.ids['next_light'].disabled
         self.ids['capture_light'].disabled = not self.ids['capture_light'].disabled
         self.ids['rescan_light'].disabled = not self.ids['rescan_light'].disabled
+        self.conn.close()
         return super().on_leave(*args)
