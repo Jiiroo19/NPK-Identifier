@@ -39,6 +39,7 @@ class Scanner(Screen):
         self.figure_wgt4.ymin=np.min(self.get_all_spec[0])
         self.figure_wgt4.ymax = np.max(self.get_all_spec[0])
         self.figure_wgt4.line1=mygraph.line1
+        mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt4.home()
        

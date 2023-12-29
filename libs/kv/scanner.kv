@@ -5,10 +5,19 @@
     name: 'scanner'
     figure_wgt4:figure_wgt4
 
+    canvas.before:
+        Color:
+            rgba: 0.7215, 0.451, 0.2, 1  # First color (in RGBA)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: ''
+            
     MDBoxLayout:
         orientation:'vertical'
         MDLabel:
             text: "Measure NPK"
+            font_name: "IMPACT"
             size_hint_y: .1
             halign: 'center'
 
@@ -24,12 +33,15 @@
 
             MDLabel:
                 text: "N: 0 ppm"
+                font_name: "IMPACT"
 
             MDLabel:
                 text: "P: 0 ppm"
+                font_name: "IMPACT"
 
             MDLabel:
                 text: "K: 0 ppm"
+                font_name: "IMPACT"
 
 
         MDBoxLayout:
@@ -42,9 +54,10 @@
                 size_hint_y: None
                 text:"Home"
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release:
                     root.disable_clock()
                     app.root.current = 'lobby'
@@ -56,9 +69,10 @@
                 disabled: False
                 text:"Capture"
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release:
                     root.disable_clock()
                     root.activate_button()
@@ -70,9 +84,10 @@
                 size_hint_y: None
                 text:"Rescan"
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release:
                     root.activate_button()
                     root.on_enter()

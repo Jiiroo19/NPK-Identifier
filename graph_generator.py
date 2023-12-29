@@ -35,7 +35,19 @@ class GraphGenerator(object):
         self.fig.subplots_adjust(left=0.13,top=0.96,right=0.93,bottom=0.2)
  
         self.ax1.set_xlim(self.xmin, self.xmax)
-        self.ax1.set_ylim(self.ymin, self.ymax)   
+        self.ax1.set_ylim(self.ymin, self.ymax)
+        # Set x-axis and y-axis label font styles
+        # font_size_axis_title = 13  # Font size
+        font_properties = {
+            'family': 'IMPACT',  # Font family (change to your desired font)
+            'weight': 'normal',   # Font weight: 'normal', 'bold', 'light', etc.
+            'style': 'normal',   # Font style: 'normal', 'italic', 'oblique'
+        }
+
+        self.ax1.set_xlabel("Wavelengths", fontsize=font_size_axis_title, fontdict=font_properties)
+        self.ax1.set_ylabel("Reflectance", fontsize=font_size_axis_title, fontdict=font_properties)
+        
+            
         self.ax1.set_xlabel("Wavelengths",fontsize=font_size_axis_title)
         self.ax1.xaxis.set_label_coords(0.5,-.12)
         self.ax1.set_ylabel("Reflectance",fontsize=font_size_axis_title)

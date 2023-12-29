@@ -5,10 +5,19 @@
     name: 'cal_light'
     figure_wgt3:figure_wgt3
 
+    canvas.before:
+        Color:
+            rgba: 0.7215, 0.451, 0.2, 1  # First color (in RGBA)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: ''
+
     MDBoxLayout:
         orientation:'vertical'
         MDLabel:
             text: "Light Spectrum"
+            font_name: "IMPACT"
             size_hint_y: .1
             halign: 'center'
         
@@ -25,9 +34,10 @@
                 size_hint_y: None
                 text:"Back"
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release:
                     root.disable_clock()
                     app.root.current = 'cal_bg'
@@ -38,9 +48,10 @@
                 size_hint_y: None
                 text:"Capture" 
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release:
                     root.disable_clock()
                     root.activate_next()
@@ -54,9 +65,10 @@
                 size_hint_y: None
                 text:"Rescan" 
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release:
                     root.activate_rescan()
                     root.on_enter()
@@ -69,9 +81,10 @@
                 size_hint_y: None
                 text:"Next"
                 theme_text_color: "Custom"
-                text_color: "black"
-                line_color: "black"
-                md_bg_color: 'grey'
+                font_name: 'IMPACT'
+                text_color: 0.7215, 0.451, 0.2, 1 #Brown
+                line_color: 0.7215, 0.451, 0.2, 1 #Brown
+                md_bg_color: 'white'
                 on_release:
                     app.root.current = 'scanner'
                                   
