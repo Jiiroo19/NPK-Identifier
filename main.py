@@ -29,6 +29,7 @@ class MyApp(MDApp):
     def build(self):
         kv_run = Builder.load_file("main.kv")
         atexit.register(self.on_exit)
+        Config.set('graphics', 'fullscreen', 'auto')
         return kv_run
         
     def on_exit(self):
@@ -50,10 +51,10 @@ class MyApp(MDApp):
 
 
 if __name__ == "__main__":
-    Config.set('graphics', 'width', '600')
-    Config.set('graphics', 'height', '400')
-    Config.set('graphics', 'resizable', False)
-    Config.write()
+    # Config.set('graphics', 'width', '480')
+    # Config.set('graphics', 'height', '320')
+    # Config.set('graphics', 'resizable', True)
+    # Config.write()
 
     # GPIO.setmode(GPIO.BCM)
     # GPIO.setup(12, GPIO.OUT)
