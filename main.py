@@ -30,10 +30,12 @@ class MyApp(MDApp):
         kv_run = Builder.load_file("main.kv")
         atexit.register(self.on_exit)
         Config.set('graphics', 'fullscreen', 'auto')
+        Config.write()
         return kv_run
         
     def on_exit(self):
         self.spec.close()
+        GPIO.cleanup()
 
     def colors(self, color_code):
         if color_code == 0:
