@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import sqlite3
 
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 Builder.load_file('./libs/kv/calibrate_dark.kv')
@@ -21,6 +21,10 @@ class CalibrateDark(Screen):
         super().__init__(**kwargs)
 
     def on_enter(self, *args):
+
+        # set the lights to low
+        GPIO.output(12, GPIO.LOW)
+
         self.conn = sqlite3.connect('spectral_calib.db')
         self.cursor = self.conn.cursor()
         # Create a table to store spectral data
@@ -50,8 +54,7 @@ class CalibrateDark(Screen):
         self.home()
         self.figure_wgt1.home()
 
-        ## set the lights to low
-        # GPIO.output(12, GPIO.LOW)
+        
        
         Clock.schedule_interval(self.update_graph,.1)
     
