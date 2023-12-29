@@ -4,6 +4,9 @@
 <Scanner>
     name: 'scanner'
     figure_wgt4:figure_wgt4
+    label_OM:label_OM
+    label_P:label_P
+    label_K:label_K
 
     MDBoxLayout:
         orientation:'vertical'
@@ -23,13 +26,16 @@
             halign: 'center'
 
             MDLabel:
-                text: "N: 0 ppm"
+                id: label_OM
+                text: "N: - ppm"
 
             MDLabel:
-                text: "P: 0 ppm"
+                id: label_P
+                text: "P: - ppm"
 
             MDLabel:
-                text: "K: 0 ppm"
+                id: label_K
+                text: "K: - ppm"
 
 
         MDBoxLayout:
