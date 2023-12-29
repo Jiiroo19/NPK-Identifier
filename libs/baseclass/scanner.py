@@ -85,7 +85,7 @@ class Scanner(Screen):
         result = self.cursor.fetchone()
         if result:
             # Convert bytes back to NumPy array when retrieving from the database
-            return np.frombuffer(result[0], dtype=np.float32)  # Adjust dtype based on your data type
+            return np.frombuffer(result[0], dtype=np.float64)  # Adjust dtype based on your data type
         else:
             return None
 
@@ -93,8 +93,6 @@ class Scanner(Screen):
         dark_data_retrieved = self.get_data('dark')
         light_data_retrieved = self.get_data('light')
         background_data_retrieved = self.get_data('background')
-
-        print(f"Dark: {len(dark_data_retrieved)} Light:{len(light_data_retrieved)} BG: {len(background_data_retrieved)}")
 
         ref_sub_dark = np.subtract(dark_data_retrieved, background_data_retrieved)
         corrected_ref = np.subtract(light_data_retrieved, ref_sub_dark)  
@@ -113,7 +111,7 @@ class Scanner(Screen):
         
     def update_graph(self,_):
         xdata= self.spec.wavelengths()
-        intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32))
+        intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float64))
         self.figure_wgt4.line1.set_data(xdata,intensities)
         self.figure_wgt4.ymax = np.max(intensities)
         self.figure_wgt4.ymin = np.min(intensities)
@@ -147,7 +145,6 @@ class Scanner(Screen):
 
         tf.keras.backend.clear_session()
         model_OM = tf.keras.models.load_model("./assets/models/final_regression_model_OM.h5")
-        model_OM.summary()
         device_pred_OM = model_OM.predict(reflectance_scaled)
         self.label_OM.text = f"N: {round(float(device_pred_OM[0][0]),2)} ppm"
 
