@@ -78,5 +78,5 @@ class Scanner(Screen):
     def on_leave(self, *args):
         self.ids['rescan_button'].disabled = True
         self.ids['capture_button'].disabled = False
-        GPIO.output(12, GPIO.HIGH)
+        GPIO.output(12, GPIO.LOW)
         return super().on_leave(*args)
