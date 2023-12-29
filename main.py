@@ -53,15 +53,4 @@ class MyApp(MDApp):
 
 
 if __name__ == "__main__":
-    # Config.set('graphics', 'width', '480')
-    # Config.set('graphics', 'height', '320')
-    # Config.set('graphics', 'resizable', True)
-    # Config.write()
-
-    # GPIO.setmode(GPIO.BCM)
-    # GPIO.setup(12, GPIO.OUT)
-    
-    # Window.size = (600, 400)
-
-    # Window.fullscreen = False
     MyApp().run()
