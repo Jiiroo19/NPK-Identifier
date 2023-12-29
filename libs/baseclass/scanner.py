@@ -130,10 +130,10 @@ class Scanner(Screen):
         Clock.unschedule(self.update_graph)
 
     def capture_model(self, final_reflectance):
-        os.environ['PYTHONHASHSEED'] = '0'
-        np.random.seed(42)
-        random.seed(42)
-        tf.random.set_seed(42)
+        # os.environ['PYTHONHASHSEED'] = '0'
+        # np.random.seed(42)
+        # random.seed(42)
+        # tf.random.set_seed(42)
 
         scaler = StandardScaler()
         input_data = np.array(final_reflectance).reshape(1, 128, 1)
