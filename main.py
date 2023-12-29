@@ -9,12 +9,14 @@ from kivy.core.window import Window
 
 from kivy.config import Config
 
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from seabreeze.spectrometers import Spectrometer
 
 
 
 class MyApp(MDApp):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(12, GPIO.OUT)
     spec = Spectrometer.from_first_available()
     spec.integration_time_micros(100000)
 
