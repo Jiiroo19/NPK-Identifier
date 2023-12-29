@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import sqlite3
 
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 
@@ -23,6 +23,10 @@ class CalibrateBG(Screen):
 
 
     def on_enter(self, *args):
+
+        # set the lights to high
+        GPIO.output(12, GPIO.LOW)
+
         self.conn = sqlite3.connect('spectral_calib.db')
         self.cursor = self.conn.cursor()
         # Create a table to store spectral data
@@ -52,7 +56,7 @@ class CalibrateBG(Screen):
         self.home()
         self.figure_wgt2.home()
 
-        # GPIO.output(12, GPIO.LOW)
+        
        
         Clock.schedule_interval(self.update_graph,.1)
     
