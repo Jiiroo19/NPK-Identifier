@@ -18,6 +18,8 @@ import random
 import tensorflow as tf
 from tensorflow import keras
 from keras.models import load_model
+from tensorflow import lite
+import tflite_runtime.interpreter as tflite
 from sklearn.preprocessing import StandardScaler
 
 import RPi.GPIO as GPIO
@@ -136,7 +138,7 @@ class Scanner(Screen):
         tf.random.set_seed(42)
 
         scaler = StandardScaler()
-        input_data = np.array(final_reflectance).reshape(1, 128)
+        input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
         # Reshape to 2D for StandardScaler
         reshaped_input_data = input_data.reshape(-1, 1)
 
@@ -144,9 +146,23 @@ class Scanner(Screen):
         reflectance_scaled = scaler.fit_transform(reshaped_input_data).reshape(1, 128)
 
         tf.keras.backend.clear_session()
-        model_OM = tf.keras.models.load_model("./assets/models/final_regression_model_OM.h5")
-        device_pred_OM = model_OM.predict(reflectance_scaled)
-        self.label_OM.text = f"N: {round(float(device_pred_OM[0][0]),2)} ppm"
+        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_OM.tflite")
+        interpreter.allocate_tensors()
+
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+
+        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
+        interpreter.set_tensor(input_details[0]['index'], input_data)
+
+        interpreter.invoke()
+
+        output_data = interpreter.get_tensor(output_details[0]['index'])
+
+
+        # # model_OM = tf.keras.models.load_model("./assets/models/final_regression_model_OM.h5")
+        # device_pred_OM = model_OM.predict(reflectance_scaled)
+        self.label_OM.text = f"N: {round(float(output_data[0][0]),2)} ppm"
 
         # tf.keras.backend.clear_session()
         # model_P = tf.keras.models.load_model("./assets/models/final_regression_model_P.h5")
