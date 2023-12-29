@@ -20,7 +20,9 @@
                 text_color: "black"
                 line_color: "black"
                 md_bg_color: 'grey'
-                on_release: app.stop()
+                on_release: 
+                    app.spec.close()
+                    app.stop()
             
             MDRectangleFlatButton:
                 size_hint_x: 1

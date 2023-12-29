@@ -1,15 +1,15 @@
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivy.lang.builder import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty
-from kivy.utils import platform
 
-import matplotlib.pyplot as plt
 from graph_generator import GraphGenerator
 import numpy as np
 import pandas as pd
+
+# import RPi.GPIO as GPIO
+
 
 Builder.load_file('./libs/kv/calibrate_bg.kv')
 
@@ -18,30 +18,29 @@ class CalibrateBG(Screen):
     figure_wgt2 = ObjectProperty()
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.i=0
-        self.csv_file = pd.read_csv('./all_results - Copy.csv')
-        self.wave = pd.read_csv('wave.csv').iloc[:,:].values
-        self.get_all_spec = self.csv_file.iloc[:, 4:].values
-        print(self.get_all_spec[0])
-        print(self.wave[0])
 
 
     def on_enter(self, *args):
-        mygraph = GraphGenerator()
+        # access the NIR
+        self.spec = MDApp.get_running_app().spec
 
-        self.ids['next_but'].disabled = True
+        mygraph = GraphGenerator()
         
         self.figure_wgt2.figure = mygraph.fig
         self.figure_wgt2.axes = mygraph.ax1
-        self.figure_wgt2.xmin= np.min(self.wave[0])
-        self.figure_wgt2.xmax = np.max(self.wave[0])
-        self.figure_wgt2.ymin=np.min(self.get_all_spec[0])
-        self.figure_wgt2.ymax = np.max(self.get_all_spec[0])
+
+        # get initial spectral data
+        self.figure_wgt2.xmin= np.min(self.spec.wavelengths())
+        self.figure_wgt2.xmax = np.max(self.spec.wavelengths())
+        self.figure_wgt2.ymin=np.min(self.spec.intensities(False,True))
+        self.figure_wgt2.ymax = np.max(self.spec.intensities(False,True))
         self.figure_wgt2.line1=mygraph.line1
         self.home()
         self.figure_wgt2.home()
+
+        # GPIO.output(12, GPIO.LOW)
        
-        Clock.schedule_interval(self.update_graph,1/60)
+        Clock.schedule_interval(self.update_graph,.1)
 
     def set_touch_mode(self,mode):
         self.figure_wgt2.touch_mode=mode
@@ -50,25 +49,32 @@ class CalibrateBG(Screen):
         self.figure_wgt2.home()
         
     def update_graph(self,_):
-        xdata= self.wave[0]
-        self.figure_wgt2.line1.set_data(xdata,self.get_all_spec[self.i])
-        self.figure_wgt2.ymax = np.max(self.get_all_spec[self.i])
-        self.figure_wgt2.ymin = np.min(self.get_all_spec[self.i])
+        xdata= self.spec.wavelengths()
+        intensities = self.spec.intensities(False,True)
+        self.figure_wgt2.line1.set_data(xdata,intensities)
+        self.figure_wgt2.ymax = np.max(intensities)
+        self.figure_wgt2.ymin = np.min(intensities)
         self.figure_wgt2.xmax = np.max(xdata)
         self.figure_wgt2.xmin = np.min(xdata)
         self.home()
         self.figure_wgt2.figure.canvas.draw_idle()
         self.figure_wgt2.figure.canvas.flush_events() 
-        self.i+=1
-    
-    def activate_next(self):
-        self.ids['next_but'].disabled = not self.ids['next_but'].disabled
     
     def activate_capture(self):
-        self.ids['capture'].disabled = not self.ids['capture'].disabled
+        self.ids['capture_bg'].disabled = not self.ids['capture_bg'].disabled
+        self.ids['next_bg'].disabled = not self.ids['next_bg'].disabled
+        self.ids['rescan_bg'].disabled = not self.ids['rescan_bg'].disabled
     
     def activate_rescan(self):
-        self.ids['rescan'].disabled = not self.ids['rescan'].disabled
+        self.ids['rescan_bg'].disabled = not self.ids['rescan_bg'].disabled
+        self.ids['next_bg'].disabled = not self.ids['next_bg'].disabled
+        self.ids['capture_bg'].disabled = not self.ids['capture_bg'].disabled
 
     def disable_clock(self):
         Clock.unschedule(self.update_graph)
+    
+    def on_leave(self, *args):
+        self.ids['next_bg'].disabled = not self.ids['next_bg'].disabled
+        self.ids['capture_bg'].disabled = not self.ids['capture_bg'].disabled
+        self.ids['rescan_bg'].disabled = not self.ids['rescan_bg'].disabled
+        return super().on_leave(*args)

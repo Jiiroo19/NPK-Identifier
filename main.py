@@ -9,8 +9,14 @@ from kivy.core.window import Window
 
 from kivy.config import Config
 
+# import RPi.GPIO as GPIO
+from seabreeze.spectrometers import Spectrometer
+
+
 
 class MyApp(MDApp):
+    spec = Spectrometer.from_first_available()
+    spec.integration_time_micros(100000)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -43,6 +49,10 @@ if __name__ == "__main__":
     Config.set('graphics', 'height', '400')
     Config.set('graphics', 'resizable', False)
     Config.write()
+
+    # GPIO.setmode(GPIO.BCM)
+    # GPIO.setup(12, GPIO.OUT)
+    
     # Window.size = (600, 400)
 
     # Window.fullscreen = False
