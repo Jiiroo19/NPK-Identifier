@@ -131,11 +131,11 @@ class Scanner(Screen):
         tf.random.set_seed(42)
 
         scaler = StandardScaler()
-        input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
+        # input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
         # Reshape to 2D for StandardScaler
-        reshaped_input_data = input_data.reshape(-1, 1)
+        reshaped_input_data = final_reflectance.reshape(-1, 1)
 
-        reflectance_scaled = scaler.fit_transform(reshaped_input_data).reshape(1, 128)
+        reflectance_scaled = scaler.fit_transform(reshaped_input_data)
 
         
         tf.keras.backend.clear_session()
