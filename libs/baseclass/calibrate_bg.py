@@ -19,10 +19,6 @@ class CalibrateBG(Screen):
     figure_wgt2 = ObjectProperty()
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-
-    def on_enter(self, *args):
-
         # set the lights to high
         GPIO.output(12, GPIO.LOW)
 
@@ -40,6 +36,7 @@ class CalibrateBG(Screen):
         # access the NIR
         self.spec = MDApp.get_running_app().spec
 
+    def on_enter(self, *args):
         mygraph = GraphGenerator()
         
         self.figure_wgt2.figure = mygraph.fig
