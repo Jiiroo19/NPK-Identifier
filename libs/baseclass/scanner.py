@@ -102,8 +102,8 @@ class Scanner(Screen):
         xdata= self.spec.wavelengths()
         intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32))
         self.figure_wgt4.line1.set_data(xdata,intensities)
-        self.figure_wgt4.ymax = np.max(intensities) + np.max(intensities)/4
-        self.figure_wgt4.ymin = np.min(intensities) + np.min(intensities)/4
+        self.figure_wgt4.ymax = np.max(intensities)
+        self.figure_wgt4.ymin = np.min(intensities)
         self.figure_wgt4.xmax = np.max(xdata)
         self.figure_wgt4.xmin = np.min(xdata)
         self.home()
