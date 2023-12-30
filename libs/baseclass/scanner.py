@@ -29,11 +29,6 @@ class Scanner(Screen):
         # set the lights to high
         GPIO.output(12, GPIO.HIGH)
 
-        # initial text label for NPK
-        self.label_OM.text = "N: - ppm"
-        self.label_P.text = "P: - ppm"
-        self.label_K.text = "K: - ppm"
-
         # initialize database
         self.conn = sqlite3.connect('spectral_calib.db')
         self.cursor = self.conn.cursor()
@@ -50,6 +45,11 @@ class Scanner(Screen):
         self.spec = MDApp.get_running_app().spec
 
     def on_enter(self, *args):
+        # initial text label for NPK
+        self.label_OM.text = "N: - ppm"
+        self.label_P.text = "P: - ppm"
+        self.label_K.text = "K: - ppm"
+        
         mygraph = GraphGenerator()
         
         self.ids['rescan_button'].disabled = True
