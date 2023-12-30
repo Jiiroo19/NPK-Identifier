@@ -6,7 +6,6 @@ from kivy.properties import ObjectProperty
 
 from graph_generator import GraphGenerator
 import numpy as np
-import pandas as pd
 import sqlite3
 
 # import RPi.GPIO as GPIO

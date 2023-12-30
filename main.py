@@ -1,11 +1,8 @@
-from kivy.clock import Clock
 from kivy.config import Config
 from kivy.utils import rgba
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
-from kivy.properties import StringProperty, NumericProperty
 from libs.baseclass import lobby, calibrate_light, calibrate_bg, calibrate_dark, scanner
-from kivy.core.window import Window
 
 from kivy.config import Config
 
@@ -29,7 +26,7 @@ class MyApp(MDApp):
 
     def build(self):
         kv_run = Builder.load_file("main.kv")
-        GPIO.output(12, GPIO.LOW)
+        # GPIO.output(12, GPIO.LOW)
         atexit.register(self.on_exit)
         Config.set('graphics', 'fullscreen', 'auto')
         Config.write()
