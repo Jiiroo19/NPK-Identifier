@@ -2,4 +2,4 @@
 *.csv
 __pycache__
 .vscode
-.db
+*.db
