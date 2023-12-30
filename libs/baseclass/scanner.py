@@ -125,6 +125,11 @@ class Scanner(Screen):
         Clock.unschedule(self.update_graph)
 
     def loading_model(self, reflectance_scaled, model_path):
+        os.environ['PYTHONHASHSEED'] = '0'
+        np.random.seed(42)
+        random.seed(42)
+        tf.random.set_seed(42)
+        
         tf.keras.backend.clear_session()
 
         # load lite model of OM
@@ -142,11 +147,6 @@ class Scanner(Screen):
         return interpreter.get_tensor(output_details[0]['index'])
 
     def capture_model(self, final_reflectance):
-        os.environ['PYTHONHASHSEED'] = '0'
-        np.random.seed(42)
-        random.seed(42)
-        tf.random.set_seed(42)
-
         scaler = StandardScaler()
         # input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
         # Reshape to 2D for StandardScaler
