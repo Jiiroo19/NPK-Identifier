@@ -9,14 +9,14 @@
             size: self.size
             source: ''
 
-    MDBoxLayout:
+    MDFloatLayout:
         orientation: 'vertical'
         padding: '10dp'
         Image:
             source: 'logo.png' 
             size_hint: None, None
             size: dp(450), dp(450)  # Adjust the size as needed
-            pos_hint: {'center_x': 0.5}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
     
         # MDLabel:
         #     text: 'NPK Identifier'
@@ -32,7 +32,7 @@
                 size_hint_y: None
                 text: 'Exit'
                 theme_text_color: "Custom"
-                font_name: 'IMPACT'
+                font_name: './assets/fonts/IMPACT.TTF'
                 text_color: 0.7215, 0.451, 0.2, 1 #Brown
                 line_color: 0.7215, 0.451, 0.2, 1 #Brown
                 md_bg_color: 'white'
@@ -45,7 +45,7 @@
                 size_hint_y: None
                 text: 'Start Scanning'
                 theme_text_color: "Custom"
-                font_name: 'IMPACT'
+                font_name: './assets/fonts/IMPACT.TTF'
                 text_color: 0.7215, 0.451, 0.2, 1 #Brown
                 line_color: 0.7215, 0.451, 0.2, 1 #Brown
                 md_bg_color: 'white'

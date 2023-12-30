@@ -105,8 +105,8 @@ class CalibrateLight(Screen):
         Clock.unschedule(self.update_graph)
     
     def on_leave(self, *args):
-        self.ids['next_light'].disabled = not self.ids['next_light'].disabled
-        self.ids['capture_light'].disabled = not self.ids['capture_light'].disabled
-        self.ids['rescan_light'].disabled = not self.ids['rescan_light'].disabled
+        self.ids['next_light'].disabled = True
+        self.ids['capture_light'].disabled = False
+        self.ids['rescan_light'].disabled = True
         self.conn.close()
         return super().on_leave(*args)

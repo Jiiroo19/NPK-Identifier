@@ -12,6 +12,7 @@ from kivy.config import Config
 # import RPi.GPIO as GPIO
 from seabreeze.spectrometers import Spectrometer
 import atexit
+import os
 
 
 
@@ -28,6 +29,7 @@ class MyApp(MDApp):
 
     def build(self):
         kv_run = Builder.load_file("main.kv")
+        GPIO.output(12, GPIO.LOW)
         atexit.register(self.on_exit)
         Config.set('graphics', 'fullscreen', 'auto')
         Config.write()
@@ -35,7 +37,6 @@ class MyApp(MDApp):
         
     def on_exit(self):
         self.spec.close()
-        # GPIO.cleanup()
 
     def colors(self, color_code):
         if color_code == 0:
@@ -53,4 +54,5 @@ class MyApp(MDApp):
 
 
 if __name__ == "__main__":
+    os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     MyApp().run()

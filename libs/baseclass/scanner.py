@@ -18,6 +18,8 @@ import random
 import tensorflow as tf
 from tensorflow import keras
 from keras.models import load_model
+from tensorflow import lite
+import tflite_runtime.interpreter as tflite
 from sklearn.preprocessing import StandardScaler
 
 # import RPi.GPIO as GPIO
@@ -94,8 +96,6 @@ class Scanner(Screen):
         light_data_retrieved = self.get_data('light')
         background_data_retrieved = self.get_data('background')
 
-        print(f"Dark: {len(dark_data_retrieved)} Light:{len(light_data_retrieved)} BG: {len(background_data_retrieved)}")
-
         ref_sub_dark = np.subtract(dark_data_retrieved, background_data_retrieved)
         corrected_ref = np.subtract(light_data_retrieved, ref_sub_dark)  
 
@@ -138,32 +138,69 @@ class Scanner(Screen):
         tf.random.set_seed(42)
 
         scaler = StandardScaler()
-        input_data = np.array(final_reflectance).reshape(1, 128, 1)
+        input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
         # Reshape to 2D for StandardScaler
         reshaped_input_data = input_data.reshape(-1, 1)
 
-        # reflectance_scaled = scaler.fit_transform(reshaped_input_data)
-        reflectance_scaled = scaler.fit_transform(reshaped_input_data).reshape(1, 128, 1)
+        reflectance_scaled = scaler.fit_transform(reshaped_input_data).reshape(1, 128)
+
+        
+        tf.keras.backend.clear_session()
+
+        # load lite model of OM
+        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_OM.tflite")
+        interpreter.allocate_tensors()
+
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+
+        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
+        interpreter.set_tensor(input_details[0]['index'], input_data)
+
+        interpreter.invoke()
+
+        output_data_OM = interpreter.get_tensor(output_details[0]['index'])
+        self.label_OM.text = f"N: {round(float(output_data_OM[0][0]),2)} ppm"
+
 
         tf.keras.backend.clear_session()
-        model_OM = tf.keras.models.load_model("./assets/models/final_regression_model_OM.h5")
-        model_OM.summary()
-        device_pred_OM = model_OM.predict(reflectance_scaled)
-        self.label_OM.text = f"N: {round(float(device_pred_OM[0][0]),2)} ppm"
 
-        tf.keras.backend.clear_session()
-        model_P = tf.keras.models.load_model("./assets/models/final_regression_model_P.h5")
-        device_pred_P = model_P.predict(reflectance_scaled)
-        self.label_P.text = f"P: {round(float(device_pred_P[0][0]), 2)} ppm"
+        # load lite model of P
+        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_P.tflite")
+        interpreter.allocate_tensors()
 
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+
+        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
+        interpreter.set_tensor(input_details[0]['index'], input_data)
+
+        interpreter.invoke()
+
+        output_data_P = interpreter.get_tensor(output_details[0]['index'])
+        self.label_P.text = f"P: {round(float(output_data_P[0][0]), 2)} ppm"
+
+        # load lite model of K
         tf.keras.backend.clear_session()
-        model_K = tf.keras.models.load_model("./assets/models/final_regression_model_K.h5")
-        device_pred_K = model_K.predict(reflectance_scaled)
-        self.label_K.text = f"K: {round(float(device_pred_K[0][0]), 2)} ppm"
+
+        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_K.tflite")
+        interpreter.allocate_tensors()
+
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+
+        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
+        interpreter.set_tensor(input_details[0]['index'], input_data)
+
+        interpreter.invoke()
+
+        output_data_K = interpreter.get_tensor(output_details[0]['index'])
+        self.label_K.text = f"K: {round(float(output_data_K[0][0]), 2)} ppm"
 
 
     def on_leave(self, *args):
         self.ids['rescan_button'].disabled = True
         self.ids['capture_button'].disabled = False
+        GPIO.output(12, GPIO.LOW)
         self.conn.close()
         return super().on_leave(*args)
