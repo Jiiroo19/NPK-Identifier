@@ -103,8 +103,8 @@ class Scanner(Screen):
         xdata= self.spec.wavelengths()
         intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32))
         self.figure_wgt4.line1.set_data(xdata,intensities)
-        self.figure_wgt4.ymax = np.max(intensities)
-        self.figure_wgt4.ymin = np.min(intensities)
+        self.figure_wgt4.ymax = np.max(intensities) + np.max(intensities)/2
+        self.figure_wgt4.ymin = np.min(intensities) + np.min(intensities)/2
         self.figure_wgt4.xmax = np.max(xdata)
         self.figure_wgt4.xmin = np.min(xdata)
         self.home()
@@ -116,11 +116,21 @@ class Scanner(Screen):
         self.ids['capture_button'].disabled = not self.ids['capture_button'].disabled
 
     def disable_clock(self):
-        self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
+        output_data_OM, output_data_P, output_data_K = self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
+        
+        self.label_OM.text = f"N: {round(float(output_data_OM[0][0]),2)} ppm"
+        self.label_P.text = f"P: {round(float(output_data_P[0][0]), 2)} ppm"
+        self.label_K.text = f"K: {round(float(output_data_K[0][0]), 2)} ppm"
+
         Clock.unschedule(self.update_graph)
 
     def loading_model(self, reflectance_scaled, model_path):
         tf.keras.backend.clear_session()
+
+        os.environ['PYTHONHASHSEED'] = '0'
+        np.random.seed(42)
+        random.seed(42)
+        tf.random.set_seed(42)
 
         # load lite model of OM
         interpreter = tflite.Interpreter(model_path=model_path)
@@ -137,36 +147,22 @@ class Scanner(Screen):
         return interpreter.get_tensor(output_details[0]['index'])
 
     def capture_model(self, final_reflectance):
-        os.environ['PYTHONHASHSEED'] = '0'
-        np.random.seed(42)
-        random.seed(42)
-        tf.random.set_seed(42)
-
         scaler = StandardScaler()
         # input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
         # Reshape to 2D for StandardScaler
         reshaped_input_data = final_reflectance.reshape(-1, 1)
-
         reflectance_scaled = scaler.fit_transform(reshaped_input_data)
 
-        
-        tf.keras.backend.clear_session()
-
         output_data_OM = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_OM.tflite")
-        self.label_OM.text = f"N: {round(float(output_data_OM[0][0]),2)} ppm"
-
-
-        tf.keras.backend.clear_session()
 
         # load lite model of P
         output_data_P = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_P.tflite")
-        self.label_P.text = f"P: {round(float(output_data_P[0][0]), 2)} ppm"
-
-        tf.keras.backend.clear_session()
 
         # load lite model of K
         output_data_K  = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_K.tflite")
-        self.label_K.text = f"K: {round(float(output_data_K[0][0]), 2)} ppm"
+        
+
+        return output_data_OM, output_data_P, output_data_K
 
 
     def on_leave(self, *args):
