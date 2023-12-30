@@ -46,7 +46,6 @@ class Scanner(Screen):
 
         # access the NIR
         self.spec = MDApp.get_running_app().spec
-        self.spec.open()
 
         mygraph = GraphGenerator()
         
@@ -103,8 +102,8 @@ class Scanner(Screen):
         xdata= self.spec.wavelengths()
         intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32))
         self.figure_wgt4.line1.set_data(xdata,intensities)
-        self.figure_wgt4.ymax = np.max(intensities) + np.max(intensities)/2
-        self.figure_wgt4.ymin = np.min(intensities) + np.min(intensities)/2
+        self.figure_wgt4.ymax = np.max(intensities) + np.max(intensities)/4
+        self.figure_wgt4.ymin = np.min(intensities) + np.min(intensities)/4
         self.figure_wgt4.xmax = np.max(xdata)
         self.figure_wgt4.xmin = np.min(xdata)
         self.home()
@@ -160,7 +159,6 @@ class Scanner(Screen):
 
         # load lite model of K
         output_data_K  = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_K.tflite")
-        
 
         return output_data_OM, output_data_P, output_data_K
 
