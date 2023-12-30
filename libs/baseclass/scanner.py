@@ -26,6 +26,9 @@ class Scanner(Screen):
     figure_wgt4 = ObjectProperty()
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+    def on_enter(self, *args):
         # set the lights to high
         GPIO.output(12, GPIO.HIGH)
 
@@ -43,13 +46,8 @@ class Scanner(Screen):
 
         # access the NIR
         self.spec = MDApp.get_running_app().spec
+        self.spec.open()
 
-    def on_enter(self, *args):
-        # initial text label for NPK
-        self.label_OM.text = "N: - ppm"
-        self.label_P.text = "P: - ppm"
-        self.label_K.text = "K: - ppm"
-        
         mygraph = GraphGenerator()
         
         self.ids['rescan_button'].disabled = True
