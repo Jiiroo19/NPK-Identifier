@@ -13,6 +13,7 @@ import random
 import tensorflow as tf
 import tflite_runtime.interpreter as tflite
 from sklearn.preprocessing import StandardScaler
+from scipy.signal import savgol_filter
 
 import RPi.GPIO as GPIO
 
@@ -94,8 +95,14 @@ class Scanner(Screen):
         corrected_sample = np.subtract(sample_intensities, sample_dark)
 
         reflectance = np.divide(corrected_sample, corrected_ref)
-        return np.multiply(reflectance, 100)
+        reflectance_mult = np.multiply(reflectance, 100)
 
+        # Apply Savitzky-Golay filter
+        window_length = 11  # Adjust for desired smoothing level
+        polyorder = 3  # Polynomial order (often 2 or 3 for spectroscopy)
+
+        return savgol_filter(reflectance_mult, window_length, polyorder)
+    
     def set_touch_mode(self,mode):
         self.figure_wgt4.touch_mode=mode
 
