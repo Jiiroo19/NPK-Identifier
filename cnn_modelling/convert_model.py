@@ -36,7 +36,7 @@ if target_what == 0:
   target_val = target_OM
   target_unk = unknown_OM
   var_name = "Organic Matter (OM), %"
-  model_dir = "./OM_Opti/final_regression_model_OM.h5"
+  model_dir = "./models/final_regression_model_OM.h5"
   convert_lite = "./final_regression_model_OM.tflite"
   FILTER_SIZE = 51
   L2_BETA = 0.006500000000000001
@@ -45,7 +45,7 @@ elif target_what == 1:
   target_val = target_P
   target_unk = unknown_P
   var_name = "Phosphorus (P), ppm"
-  model_dir = "./P_Opti/final_regression_model_P.h5"
+  model_dir = "./models/final_regression_model_P.h5"
   convert_lite = "./final_regression_model_P.tflite"
   FILTER_SIZE = 17
   L2_BETA = 0.0205
@@ -54,7 +54,7 @@ else:
   target_val = target_K
   target_unk = unknown_K
   var_name = "Potassium [K], ppm"
-  model_dir = "./K_Opti/final_regression_model_K.h5"
+  model_dir = "./models/final_regression_model_K.h5"
   convert_lite = "./final_regression_model_K.tflite"
   FILTER_SIZE = 9
   L2_BETA = 0.034
@@ -97,6 +97,7 @@ interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
+print(input_details)
 
 # Sample input data
 pred = []

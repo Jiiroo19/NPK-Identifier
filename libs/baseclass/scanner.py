@@ -124,6 +124,23 @@ class Scanner(Screen):
         self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
         Clock.unschedule(self.update_graph)
 
+    def loading_model(self, reflectance_scaled, model_path):
+        tf.keras.backend.clear_session()
+
+        # load lite model of OM
+        interpreter = tflite.Interpreter(model_path=model_path)
+        interpreter.allocate_tensors()
+
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+
+        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
+        interpreter.set_tensor(input_details[0]['index'], input_data)
+
+        interpreter.invoke()
+
+        return interpreter.get_tensor(output_details[0]['index'])
+
     def capture_model(self, final_reflectance):
         os.environ['PYTHONHASHSEED'] = '0'
         np.random.seed(42)
@@ -140,54 +157,20 @@ class Scanner(Screen):
         
         tf.keras.backend.clear_session()
 
-        # load lite model of OM
-        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_OM.tflite")
-        interpreter.allocate_tensors()
-
-        input_details = interpreter.get_input_details()
-        output_details = interpreter.get_output_details()
-
-        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
-        interpreter.set_tensor(input_details[0]['index'], input_data)
-
-        interpreter.invoke()
-
-        output_data_OM = interpreter.get_tensor(output_details[0]['index'])
+        output_data_OM = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_OM.tflite")
         self.label_OM.text = f"N: {round(float(output_data_OM[0][0]),2)} ppm"
 
 
         tf.keras.backend.clear_session()
 
         # load lite model of P
-        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_P.tflite")
-        interpreter.allocate_tensors()
-
-        input_details = interpreter.get_input_details()
-        output_details = interpreter.get_output_details()
-
-        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
-        interpreter.set_tensor(input_details[0]['index'], input_data)
-
-        interpreter.invoke()
-
-        output_data_P = interpreter.get_tensor(output_details[0]['index'])
+        output_data_P = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_P.tflite")
         self.label_P.text = f"P: {round(float(output_data_P[0][0]), 2)} ppm"
 
-        # load lite model of K
         tf.keras.backend.clear_session()
 
-        interpreter = tflite.Interpreter(model_path="./assets/models/final_regression_model_K.tflite")
-        interpreter.allocate_tensors()
-
-        input_details = interpreter.get_input_details()
-        output_details = interpreter.get_output_details()
-
-        input_data = reflectance_scaled.astype(np.float32).reshape(1, 128)
-        interpreter.set_tensor(input_details[0]['index'], input_data)
-
-        interpreter.invoke()
-
-        output_data_K = interpreter.get_tensor(output_details[0]['index'])
+        # load lite model of K
+        output_data_K  = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_K.tflite")
         self.label_K.text = f"K: {round(float(output_data_K[0][0]), 2)} ppm"
 
 
