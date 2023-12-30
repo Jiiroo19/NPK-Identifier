@@ -1,28 +1,20 @@
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivy.lang.builder import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty
-from kivy.utils import platform
 
-import matplotlib.pyplot as plt
 from graph_generator import GraphGenerator
 import numpy as np
-import pandas as pd
 import sqlite3
 import os
 import random
 
 import tensorflow as tf
-from tensorflow import keras
-from keras.models import load_model
-from tensorflow import lite
 import tflite_runtime.interpreter as tflite
 from sklearn.preprocessing import StandardScaler
 
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 Builder.load_file('./libs/kv/scanner.kv')
 
@@ -38,7 +30,7 @@ class Scanner(Screen):
 
     def on_enter(self, *args):
         # set the lights to high
-        GPIO.output(12, GPIO.HIGH)
+        # GPIO.output(12, GPIO.HIGH)
         # initial text label for NPK
         self.label_OM.text = "N: - ppm"
         self.label_P.text = "P: - ppm"
@@ -201,6 +193,6 @@ class Scanner(Screen):
     def on_leave(self, *args):
         self.ids['rescan_button'].disabled = True
         self.ids['capture_button'].disabled = False
-        GPIO.output(12, GPIO.LOW)
+        # GPIO.output(12, GPIO.LOW)
         self.conn.close()
         return super().on_leave(*args)

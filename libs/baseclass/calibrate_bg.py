@@ -6,10 +6,9 @@ from kivy.properties import ObjectProperty
 
 from graph_generator import GraphGenerator
 import numpy as np
-import pandas as pd
 import sqlite3
 
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 
 
@@ -25,7 +24,7 @@ class CalibrateBG(Screen):
     def on_enter(self, *args):
 
         # set the lights to high
-        GPIO.output(12, GPIO.LOW)
+        # GPIO.output(12, GPIO.LOW)
 
         self.conn = sqlite3.connect('spectral_calib.db')
         self.cursor = self.conn.cursor()
