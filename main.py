@@ -6,7 +6,7 @@ from libs.baseclass import lobby, calibrate_light, calibrate_bg, calibrate_dark,
 
 from kivy.config import Config
 
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from seabreeze.spectrometers import Spectrometer
 import atexit
 import os
@@ -14,8 +14,8 @@ import os
 
 
 class MyApp(MDApp):
-    # GPIO.setmode(GPIO.BCM)
-    # GPIO.setup(12, GPIO.OUT)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(12, GPIO.OUT)
     spec = Spectrometer.from_first_available()
     spec.integration_time_micros(100000)
 
@@ -26,7 +26,7 @@ class MyApp(MDApp):
 
     def build(self):
         kv_run = Builder.load_file("main.kv")
-        # GPIO.output(12, GPIO.LOW)
+        GPIO.output(12, GPIO.LOW)
         atexit.register(self.on_exit)
         Config.set('graphics', 'fullscreen', 'auto')
         Config.write()

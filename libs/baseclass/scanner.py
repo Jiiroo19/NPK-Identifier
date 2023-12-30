@@ -14,7 +14,7 @@ import tensorflow as tf
 import tflite_runtime.interpreter as tflite
 from sklearn.preprocessing import StandardScaler
 
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 Builder.load_file('./libs/kv/scanner.kv')
 
@@ -30,7 +30,8 @@ class Scanner(Screen):
 
     def on_enter(self, *args):
         # set the lights to high
-        # GPIO.output(12, GPIO.HIGH)
+        GPIO.output(12, GPIO.HIGH)
+
         # initial text label for NPK
         self.label_OM.text = "N: - ppm"
         self.label_P.text = "P: - ppm"
@@ -193,6 +194,6 @@ class Scanner(Screen):
     def on_leave(self, *args):
         self.ids['rescan_button'].disabled = True
         self.ids['capture_button'].disabled = False
-        # GPIO.output(12, GPIO.LOW)
+        GPIO.output(12, GPIO.LOW)
         self.conn.close()
         return super().on_leave(*args)
