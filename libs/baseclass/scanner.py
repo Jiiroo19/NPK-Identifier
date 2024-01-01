@@ -22,15 +22,18 @@ Builder.load_file('./libs/kv/scanner.kv')
 
 class Scanner(Screen):
     label_OM = ObjectProperty()
+    label_N = ObjectProperty()
     label_P = ObjectProperty()
     label_K = ObjectProperty()
     figure_wgt4 = ObjectProperty()
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
 
     def on_enter(self, *args):
-        self.label_OM.text = "N: - ppm"
+        self.label_OM.text = "OM: - %"
+        self.label_N.text = "N: - ppm"
         self.label_P.text = "K: - ppm"
         self.label_K.text = "P: - ppm"
 
@@ -82,7 +85,12 @@ class Scanner(Screen):
             return np.frombuffer(result[0], dtype=np.float32)  # Adjust dtype based on your data type
         else:
             return None
-
+    
+    # rough estimation of available nitrogen
+    def cal_nitrogen(self, organic_matter):
+        return ((organic_matter * 0.03) * 0.2) * 10000
+        
+    
     def reflectance_cal(self, sample_intensities):
         dark_data_retrieved = self.get_data('dark')
         light_data_retrieved = self.get_data('light')
@@ -128,7 +136,9 @@ class Scanner(Screen):
     def disable_clock(self):
         output_data_OM, output_data_P, output_data_K = self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
         
-        self.label_OM.text = f"N: {round(float(output_data_OM[0][0]),2)} ppm"
+        # update the text labels of OM, N, P, K
+        self.label_OM.text = f"N: {round(float(output_data_OM[0][0]),2)} %"
+        self.label_N.text = f"N: {round(float(self.cal_nitrogen(output_data_OM)),2)} ppm"
         self.label_P.text = f"P: {round(float(output_data_P[0][0]), 2)} ppm"
         self.label_K.text = f"K: {round(float(output_data_K[0][0]), 2)} ppm"
 
