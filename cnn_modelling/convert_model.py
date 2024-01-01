@@ -31,7 +31,7 @@ unknown_P = unkwown["Phosphorus (P), ppm"]
 unknown_K = unkwown["Potassium [K], ppm"]
 
 # 0 = OM, 1 = P, 2 = K
-target_what = 2
+target_what = 1
 if target_what == 0:
   target_val = target_OM
   target_unk = unknown_OM
@@ -112,9 +112,10 @@ for sample in unknown_features:
   output_data = interpreter.get_tensor(output_details[0]['index'])
 
   # Print output (modify as needed for your model's output format)
-  pred.append(output_data)
+  pred.append(output_data[0])
 
 # test unknown predection
+print(pred)
 print("Unknown")
 mse = mean_squared_error(target_unk, pred)
 r2 = r2_score(target_unk, pred)
