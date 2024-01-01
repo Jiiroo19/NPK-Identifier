@@ -41,5 +41,7 @@ class Lobby(Screen):
 
     def handle_answer(self, *args):
         self.dialog_close()
-        subprocess.call(['sudo', 'shutdown', '-h', 'now'])
+
+        # this will shutdown the device
+        # subprocess.call(['sudo', 'shutdown', '-h', 'now'])
 
