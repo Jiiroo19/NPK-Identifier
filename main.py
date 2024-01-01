@@ -28,8 +28,8 @@ class MyApp(MDApp):
         kv_run = Builder.load_file("main.kv")
         GPIO.output(12, GPIO.LOW)
         atexit.register(self.on_exit)
-        Config.set('graphics', 'fullscreen', 'auto')
-        Config.write()
+        # Config.set('graphics', 'fullscreen', 'auto')
+        # Config.write()
         return kv_run
         
     def on_exit(self):
