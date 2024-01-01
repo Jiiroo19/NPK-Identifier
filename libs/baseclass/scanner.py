@@ -88,7 +88,7 @@ class Scanner(Screen):
     
     # rough estimation of available nitrogen
     def cal_nitrogen(self, organic_matter):
-        return ((organic_matter * 0.03) * 0.2) * 10000
+        return (((organic_matter/100) * 0.03) * 0.2) * 10000
         
     
     def reflectance_cal(self, sample_intensities):
