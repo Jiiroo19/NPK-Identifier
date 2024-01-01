@@ -30,15 +30,16 @@
             MDRectangleFlatButton:
                 size_hint_x: 1
                 size_hint_y: None
-                text: 'Exit'
+                text: 'Shutdown'
                 theme_text_color: "Custom"
                 font_name: './assets/fonts/IMPACT.TTF'
                 text_color: 0.7215, 0.451, 0.2, 1 #Brown
                 line_color: 0.7215, 0.451, 0.2, 1 #Brown
                 md_bg_color: 'white'
                 on_release: 
-                    app.spec.close()
-                    app.stop()
+                    root.shutdown()
+                    # app.spec.close()
+                    # app.stop()
             
             MDRectangleFlatButton:
                 size_hint_x: 1
