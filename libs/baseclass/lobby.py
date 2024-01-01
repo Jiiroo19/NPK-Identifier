@@ -13,7 +13,7 @@ class Lobby(Screen):
     dialog = None
 
     def close_dilog(self):
-            self.dialog.dismiss()
+        self.dialog.dismiss()
 
     def shutdown(self):
         if not self.dialog:
