@@ -39,7 +39,7 @@ class GraphGenerator(object):
         # Set x-axis and y-axis label font styles
         # font_size_axis_title = 13  # Font size
         font_properties = {
-            'family': 'IMPACT',  # Font family (change to your desired font)
+            'family': './assets/fonts/IMPACT.TTF',  # Font family (change to your desired font)
             'weight': 'normal',   # Font weight: 'normal', 'bold', 'light', etc.
             'style': 'normal',   # Font style: 'normal', 'italic', 'oblique'
         }
