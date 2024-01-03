@@ -9,7 +9,7 @@ from kivy.config import Config
 import RPi.GPIO as GPIO
 from seabreeze.spectrometers import Spectrometer
 import atexit
-# import os
+import os
 
 
 
