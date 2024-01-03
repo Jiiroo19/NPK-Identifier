@@ -43,5 +43,5 @@ class Lobby(Screen):
         self.dialog_close()
 
         # this will shutdown the device
-        # subprocess.call(['sudo', 'shutdown', '-h', 'now'])
+        subprocess.call(['sudo', 'shutdown', '-h', 'now'])
 
