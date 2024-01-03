@@ -15,8 +15,8 @@ import os
 import random
 
 # load csv files containing spectral data
-data = pd.read_csv("./Training_Set - Copy.csv")
-unkwown = pd.read_csv("./test_set - Copy.csv")
+data = pd.read_csv("./Training_Set_109_wave.csv")
+unkwown = pd.read_csv("./Test_set_109_wave.csv")
 
 # Separate features (spectral data) and target variables (OM, P, K)
 features = np.array(data.iloc[:, 4:].values)
@@ -31,15 +31,13 @@ unknown_P = unkwown["Phosphorus (P), ppm"]
 unknown_K = unkwown["Potassium [K], ppm"]
 
 # 0 = OM, 1 = P, 2 = K
-target_what = 1
+target_what = 0
 if target_what == 0:
   target_val = target_OM
   target_unk = unknown_OM
   var_name = "Organic Matter (OM), %"
   model_dir = "./models/final_regression_model_OM.h5"
   convert_lite = "./final_regression_model_OM.tflite"
-  FILTER_SIZE = 51
-  L2_BETA = 0.006500000000000001
 
 elif target_what == 1:
   target_val = target_P
@@ -47,8 +45,6 @@ elif target_what == 1:
   var_name = "Phosphorus (P), ppm"
   model_dir = "./models/final_regression_model_P.h5"
   convert_lite = "./final_regression_model_P.tflite"
-  FILTER_SIZE = 17
-  L2_BETA = 0.0205
 
 else:
   target_val = target_K
@@ -56,8 +52,6 @@ else:
   var_name = "Potassium [K], ppm"
   model_dir = "./models/final_regression_model_K.h5"
   convert_lite = "./final_regression_model_K.tflite"
-  FILTER_SIZE = 9
-  L2_BETA = 0.034
 
 
 scaler = StandardScaler()
@@ -102,7 +96,7 @@ print(input_details)
 # Sample input data
 pred = []
 for sample in unknown_features:
-  input_data = sample.astype(np.float32).reshape(1, 128)
+  input_data = sample.astype(np.float32).reshape(1, 109)
   interpreter.set_tensor(input_details[0]['index'], input_data)
 
   # Run inference
