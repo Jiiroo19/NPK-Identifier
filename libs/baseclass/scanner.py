@@ -167,6 +167,9 @@ class Scanner(Screen):
         return interpreter.get_tensor(output_details[0]['index'])
 
     def capture_model(self, final_reflectance):
+        final_reflectance = final_reflectance[:, :110]
+        print(final_reflectance.shape)
+        
         scaler = StandardScaler()
         # input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
         # Reshape to 2D for StandardScaler
