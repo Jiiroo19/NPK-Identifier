@@ -140,7 +140,7 @@ class Scanner(Screen):
         self.label_OM.text = f"OM: {round(float(output_data_OM[0][0]),2)} %"
         self.label_N.text = f"N: {round(float(self.cal_nitrogen(output_data_OM)),2)} ppm"
         self.label_P.text = f"P: {round(float(output_data_P[0][0]), 2)} ppm"
-        # self.label_K.text = f"K: {round(float(output_data_K[0][0]), 2)} ppm"
+        self.label_K.text = f"K: {round(float(output_data_K[0][0]), 2)} ppm"
 
         Clock.unschedule(self.update_graph)
 
@@ -182,10 +182,10 @@ class Scanner(Screen):
         output_data_P = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite")
 
         # load lite model of K
-        # output_data_K  = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite")
+        output_data_K  = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite")
 
-        # return output_data_OM, output_data_P, output_data_K
-        return output_data_OM, output_data_P, None
+        return output_data_OM, output_data_P, output_data_K
+        # return output_data_OM, output_data_P, None
 
 
     def on_leave(self, *args):
