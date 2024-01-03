@@ -9,7 +9,7 @@ from kivy.config import Config
 import RPi.GPIO as GPIO
 from seabreeze.spectrometers import Spectrometer
 import atexit
-import os
+# import os
 
 
 
@@ -35,15 +35,6 @@ class MyApp(MDApp):
     def on_exit(self):
         self.spec.close()
 
-    def colors(self, color_code):
-        if color_code == 0:
-            color_rgba = '#35353f'
-        elif color_code == 1:
-            color_rgba = '#09AF79'
-        elif color_code == 2:
-            color_rgba = '#ffffff'
-        return rgba(color_rgba)
-
     def show_screen(self, name):
         self.root.current = 'lobby'
         self.root.get_screen('lobby').ids.manage.current = name
@@ -51,5 +42,5 @@ class MyApp(MDApp):
 
 
 if __name__ == "__main__":
-    os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
+    # os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     MyApp().run()
