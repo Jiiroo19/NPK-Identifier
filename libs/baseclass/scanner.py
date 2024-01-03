@@ -34,8 +34,8 @@ class Scanner(Screen):
     def on_enter(self, *args):
         self.label_OM.text = "OM: - %"
         self.label_N.text = "N: - ppm"
-        self.label_P.text = "K: - ppm"
-        self.label_K.text = "P: - ppm"
+        self.label_P.text = "P: - ppm"
+        self.label_K.text = "K: - ppm"
 
         # set the lights to high
         GPIO.output(12, GPIO.HIGH)
