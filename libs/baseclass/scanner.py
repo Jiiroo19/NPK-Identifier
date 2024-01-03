@@ -176,13 +176,13 @@ class Scanner(Screen):
         reshaped_input_data = final_reflectance.reshape(-1, 1)
         reflectance_scaled = scaler.fit_transform(reshaped_input_data)
 
-        output_data_OM = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_OM.tflite")
+        output_data_OM = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite")
 
         # load lite model of P
-        output_data_P = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_P.tflite")
+        output_data_P = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite")
 
         # load lite model of K
-        output_data_K  = self.loading_model(reflectance_scaled, "./assets/models/final_regression_model_K.tflite")
+        output_data_K  = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite")
 
         return output_data_OM, output_data_P, output_data_K
 
