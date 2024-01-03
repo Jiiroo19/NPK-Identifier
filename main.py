@@ -14,8 +14,6 @@ import atexit
 
 
 class MyApp(MDApp):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(12, GPIO.OUT)
     spec = Spectrometer.from_first_available()
     spec.integration_time_micros(100000)
 
@@ -23,10 +21,12 @@ class MyApp(MDApp):
         super().__init__(**kwargs)
         self.title = 'NPK Identifier'
         self.theme_cls.primary_palette = "Gray"
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(12, GPIO.OUT)
+        GPIO.output(12, GPIO.LOW)
 
     def build(self):
         kv_run = Builder.load_file("main.kv")
-        GPIO.output(12, GPIO.LOW)
         atexit.register(self.on_exit)
         Config.set('graphics', 'fullscreen', 'auto')
         Config.write()
@@ -42,5 +42,5 @@ class MyApp(MDApp):
 
 
 if __name__ == "__main__":
-    # os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
+    os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
     MyApp().run()
