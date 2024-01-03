@@ -6,7 +6,7 @@ import math
 import copy
 
 import matplotlib
-# matplotlib.use('Agg')
+matplotlib.use('Agg')
 from kivy.graphics.texture import Texture
 from kivy.graphics.transformation import Matrix
 from kivy.lang import Builder
