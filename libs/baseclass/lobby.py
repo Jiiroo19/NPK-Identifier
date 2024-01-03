@@ -1,3 +1,4 @@
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen
 from kivy.lang.builder import Builder
 from kivymd.uix.dialog import MDDialog
@@ -41,6 +42,8 @@ class Lobby(Screen):
 
     def handle_answer(self, *args):
         self.dialog_close()
+        spec = MDApp.get_running_app().spec
+        spec.close()
 
         # this will shutdown the device
         subprocess.call(['sudo', 'shutdown', '-h', 'now'])
