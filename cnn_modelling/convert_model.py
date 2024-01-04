@@ -96,7 +96,7 @@ print(input_details)
 # Sample input data
 pred = []
 for sample in unknown_features:
-  input_data = sample.astype(np.float32).reshape(1, 109)
+  input_data = sample.astype(np.float32).reshape(1, 92)
   interpreter.set_tensor(input_details[0]['index'], input_data)
 
   # Run inference
