@@ -16,8 +16,8 @@ import os
 class MyApp(MDApp):
     # GPIO.setmode(GPIO.BCM)
     # GPIO.setup(12, GPIO.OUT)
-    spec = Spectrometer.from_first_available()
-    spec.integration_time_micros(100000)
+    # spec = Spectrometer.from_first_available()
+    # spec.integration_time_micros(100000)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

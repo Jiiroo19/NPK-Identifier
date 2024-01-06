@@ -48,9 +48,9 @@ class Scanner(Screen):
             )
         ''')
 
-        # access the NIR
-        self.spec = MDApp.get_running_app().spec
-        self.spec.open()
+        # # access the NIR
+        # self.spec = MDApp.get_running_app().spec
+        # self.spec.open()
 
         mygraph = GraphGenerator()
         
@@ -61,10 +61,10 @@ class Scanner(Screen):
         self.figure_wgt4.axes = mygraph.ax1
 
         # get initial spectral data
-        self.figure_wgt4.xmin= np.min(self.spec.wavelengths())
-        self.figure_wgt4.xmax = np.max(self.spec.wavelengths())
-        self.figure_wgt4.ymin=np.min(self.spec.intensities(False,True))
-        self.figure_wgt4.ymax = np.max(self.spec.intensities(False,True))
+        self.figure_wgt4.xmin= 0
+        self.figure_wgt4.xmax = 100
+        self.figure_wgt4.ymin=0
+        self.figure_wgt4.ymax = 100
         self.figure_wgt4.line1=mygraph.line1
         mygraph.line1.set_color('red')
         self.home()
@@ -72,30 +72,30 @@ class Scanner(Screen):
        
         Clock.schedule_interval(self.update_graph,.1)
 
-    def get_data(self, data_type):
-        self.cursor.execute('''
-            SELECT data FROM SpectralData WHERE type = ?
-        ''', (data_type,))
-        result = self.cursor.fetchone()
-        if result:
-            # Convert bytes back to NumPy array when retrieving from the database
-            return np.frombuffer(result[0], dtype=np.float32)  # Adjust dtype based on your data type
-        else:
-            return None
+    # def get_data(self, data_type):
+    #     self.cursor.execute('''
+    #         SELECT data FROM SpectralData WHERE type = ?
+    #     ''', (data_type,))
+    #     result = self.cursor.fetchone()
+    #     if result:
+    #         # Convert bytes back to NumPy array when retrieving from the database
+    #         return np.frombuffer(result[0], dtype=np.float32)  # Adjust dtype based on your data type
+    #     else:
+    #         return None
 
-    def reflectance_cal(self, sample_intensities):
-        dark_data_retrieved = self.get_data('dark')
-        light_data_retrieved = self.get_data('light')
-        background_data_retrieved = self.get_data('background')
+    # def reflectance_cal(self, sample_intensities):
+    #     dark_data_retrieved = self.get_data('dark')
+    #     light_data_retrieved = self.get_data('light')
+    #     background_data_retrieved = self.get_data('background')
 
-        ref_sub_dark = np.subtract(dark_data_retrieved, background_data_retrieved)
-        corrected_ref = np.subtract(light_data_retrieved, ref_sub_dark)  
+    #     ref_sub_dark = np.subtract(dark_data_retrieved, background_data_retrieved)
+    #     corrected_ref = np.subtract(light_data_retrieved, ref_sub_dark)  
 
-        sample_dark = np.subtract(dark_data_retrieved, background_data_retrieved)
-        corrected_sample = np.subtract(sample_intensities, sample_dark)
+    #     sample_dark = np.subtract(dark_data_retrieved, background_data_retrieved)
+    #     corrected_sample = np.subtract(sample_intensities, sample_dark)
 
-        reflectance = np.divide(corrected_sample, corrected_ref)
-        return np.multiply(reflectance, 100)
+    #     reflectance = np.divide(corrected_sample, corrected_ref)
+    #     return np.multiply(reflectance, 100)
 
     def set_touch_mode(self,mode):
         self.figure_wgt4.touch_mode=mode
@@ -104,8 +104,8 @@ class Scanner(Screen):
         self.figure_wgt4.home()
         
     def update_graph(self,_):
-        xdata= self.spec.wavelengths()
-        intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32))
+        xdata= np.array([0,1,2,3])
+        intensities = np.array([0,1,2,3])
         self.figure_wgt4.line1.set_data(xdata,intensities)
         self.figure_wgt4.ymax = np.max(intensities)
         self.figure_wgt4.ymin = np.min(intensities)
@@ -120,7 +120,7 @@ class Scanner(Screen):
         self.ids['capture_button'].disabled = not self.ids['capture_button'].disabled
 
     def disable_clock(self):
-        self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
+        # self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
         Clock.unschedule(self.update_graph)
 
     def capture_model(self, final_reflectance):
