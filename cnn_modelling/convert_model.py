@@ -15,8 +15,8 @@ import os
 import random
 
 # load csv files containing spectral data
-data = pd.read_csv("./Training_Set_109_wave.csv")
-unkwown = pd.read_csv("./Test_set_109_wave.csv")
+data = pd.read_csv("./Training_Set_956_1500.csv")
+unkwown = pd.read_csv("./Test_set_956_1500.csv")
 
 # Separate features (spectral data) and target variables (OM, P, K)
 features = np.array(data.iloc[:, 4:].values)
@@ -31,7 +31,7 @@ unknown_P = unkwown["Phosphorus (P), ppm"]
 unknown_K = unkwown["Potassium [K], ppm"]
 
 # 0 = OM, 1 = P, 2 = K
-target_what = 1
+target_what = 2
 if target_what == 0:
   target_val = target_OM
   target_unk = unknown_OM
