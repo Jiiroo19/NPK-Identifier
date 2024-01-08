@@ -107,7 +107,7 @@ class Scanner(Screen):
 
         # Apply Savitzky-Golay filter
         window_length = 6  # Adjust for desired smoothing level
-        polyorder = 2  # Polynomial order (often 2 or 3 for spectroscopy)
+        polyorder = 3  # Polynomial order (often 2 or 3 for spectroscopy)
 
         return savgol_filter(reflectance_mult, window_length, polyorder)
     
