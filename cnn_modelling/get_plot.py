@@ -14,6 +14,8 @@ import tflite_runtime.interpreter as tflite
 import os
 import random
 
+
+
 # load csv files containing spectral data
 data = pd.read_csv("./Training_Set_956_1500.csv")
 unkwown = pd.read_csv("./Test_set_956_1500.csv")
@@ -62,29 +64,6 @@ unknown_features = scaler.fit_transform(unknown_features)
 X_train, X_test, y_train, y_test = train_test_split(features_scaled, target_val, test_size=0.2, random_state=42)
 
 
-## Define random seeds ir order to maintain reproducible results through multiple testing phases
-def reproducible_comp():
-    os.environ['PYTHONHASHSEED'] = '0'
-    np.random.seed(42)
-    random.seed(42)
-    tf.random.set_seed(42)
-
-
-## Make computations reproducible
-tf.keras.backend.clear_session()
-reproducible_comp() 
-
-# Convert H5 file model to tflite
-model_cnn = tf.keras.models.load_model(model_dir)
-converter = lite.TFLiteConverter.from_keras_model(model_cnn)
-converter.optimizations = [tf.lite.Optimize.DEFAULT]  # Optional optimizations
-tflite_model = converter.convert()
-
-# Specify the desired filename for the TensorFlow Lite model
-with open(convert_lite, "wb") as f:
-    f.write(tflite_model)
-    
-tf.keras.backend.clear_session()
 
 interpreter = tflite.Interpreter(model_path=convert_lite)
 interpreter.allocate_tensors()
@@ -108,20 +87,6 @@ for sample in unknown_features:
   # Print output (modify as needed for your model's output format)
   pred.append(output_data[0])
 
-# test unknown predection
-print(pred)
-print("Unknown")
-mse = mean_squared_error(target_unk, pred)
-r2 = r2_score(target_unk, pred)
+for i  in range(0,len(unknown_features)):
+    print(f"True: {target_unk[i]}  Pred: {pred[i]}")
 
-print(f"Mean Squared Error: {mse}")
-print(f"R-Squared: {r2}\n")
-
-##plt.subplot(223)
-plt.scatter(target_unk, pred)
-plt.title(f"Unknown: {var_name}")
-plt.xlabel("Actual Values")
-plt.ylabel("Predicted Values")
-plt.plot([min(target_unk), max(target_unk)], [min(target_unk), max(target_unk)], linestyle='--', color='black', linewidth=2)
-
-plt.show()
