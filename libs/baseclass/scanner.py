@@ -109,7 +109,7 @@ class Scanner(Screen):
         window_length = 11  # Adjust for desired smoothing level
         polyorder = 3  # Polynomial order (often 2 or 3 for spectroscopy)
 
-        return savgol_filter(reflectance_mult, window_length, polyorder)
+        return reflectance_mult #savgol_filter(reflectance_mult, window_length, polyorder)
     
     def set_touch_mode(self,mode):
         self.figure_wgt4.touch_mode=mode
