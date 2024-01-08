@@ -106,10 +106,10 @@ class Scanner(Screen):
         reflectance_mult = np.multiply(reflectance, 100)
 
         # Apply Savitzky-Golay filter
-        window_length = 11  # Adjust for desired smoothing level
+        window_length = 5  # Adjust for desired smoothing level
         polyorder = 3  # Polynomial order (often 2 or 3 for spectroscopy)
 
-        return reflectance_mult #savgol_filter(reflectance_mult, window_length, polyorder)
+        return savgol_filter(reflectance_mult, window_length, polyorder)
     
     def set_touch_mode(self,mode):
         self.figure_wgt4.touch_mode=mode
