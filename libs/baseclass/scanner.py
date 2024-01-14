@@ -32,6 +32,10 @@ class Scanner(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        os.environ['PYTHONHASHSEED'] = '0'
+        np.random.seed(42)
+        random.seed(42)
+        tf.random.set_seed(42)
 
 
     def on_enter(self, *args):
