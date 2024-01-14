@@ -148,7 +148,7 @@ class Scanner(Screen):
 
     # this will stop the scheduled task and get the final reflectance and update the labels
     def disable_clock(self):
-        output_data_OM, output_data_P, output_data_K = self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
+        output_data_OM, output_data_P, output_data_K = self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True))))
         
         # update the text labels of OM, N, P, K
         self.label_OM.text = f"OM: {round(float(output_data_OM[0][0]),2)} %"
@@ -162,11 +162,6 @@ class Scanner(Screen):
     def loading_model(self, reflectance_scaled, model_path, model_shape):
         tf.keras.backend.clear_session()
 
-        os.environ['PYTHONHASHSEED'] = '0'
-        np.random.seed(42)
-        random.seed(42)
-        tf.random.set_seed(42)
-
         # load lite model of OM
         interpreter = tflite.Interpreter(model_path=model_path)
         interpreter.allocate_tensors()
@@ -174,7 +169,7 @@ class Scanner(Screen):
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
 
-        input_data = reflectance_scaled.astype(np.float32).reshape(-1, model_shape)
+        input_data = reflectance_scaled.astype(np.float32).reshape(1, model_shape)
         interpreter.set_tensor(input_details[0]['index'], input_data)
 
         interpreter.invoke()
@@ -197,16 +192,18 @@ class Scanner(Screen):
         return first_derivative_padded
 
     def capture_with_derivatives(self, reflectance, model_path, model_shape):
-        x_cal, x_tuning = train_test_split(np.array(self.data.iloc[:, 4:]).astype(np.float32), test_size=0.33, random_state=42)
+        # x_cal, x_tuning = train_test_split(np.array(self.data.iloc[:, 4:]).astype(np.float32), test_size=0.33, random_state=42)
+        features = self.data.iloc[:, 4:].values
 
 
-        first_der_features = self.calculate_first_derivative(x_cal.astype(np.float32))
+        first_der_features = self.calculate_first_derivative(features)
         first_der_reflectance = self.calculate_first_derivative(reflectance)
 
-        der_features = np.concatenate((x_cal.astype(np.float32), first_der_features), axis=1)
+        der_features = np.concatenate((features, first_der_features), axis=1)
         der_reflectance = np.concatenate((reflectance, first_der_reflectance), axis=1)
 
         reflectance_scaled = self.standardize_column(der_features, der_reflectance)
+
         return self.loading_model(reflectance_scaled, model_path, model_shape)
 
     def capture_model(self, final_reflectance):
@@ -214,13 +211,13 @@ class Scanner(Screen):
         # reflectance_scaled = self.standardize_column(X_train , np.array(final_reflectance[:92]).astype(np.float32).reshape(1, -1))
         
         # the code is being run by root the reason for this hardcoded directory
-        output_data_OM = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 256)
+        output_data_OM = self.capture_with_derivatives(final_reflectance.reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 256)
 
         # load lite model of P
-        output_data_P = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 256)
+        output_data_P = self.capture_with_derivatives(final_reflectance.reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 256)
 
         # load lite model of K
-        output_data_K  = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
+        output_data_K  = self.capture_with_derivatives(final_reflectance.reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
 
         return output_data_OM, output_data_P, output_data_K
         # return output_data_OM, output_data_P, None
