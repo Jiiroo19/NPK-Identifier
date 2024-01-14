@@ -179,7 +179,7 @@ class Scanner(Screen):
     def standardize_column(self, X_train, features):
         ## We train the scaler on the full train set and apply it to the other datasets
         scaler = StandardScaler().fit(X_train)
-        features_scaled = scaler.transform(features.reshape(-1, 1))
+        features_scaled = scaler.transform(features)
         return features_scaled
 
     def calculate_first_derivative(self, features):
@@ -202,6 +202,7 @@ class Scanner(Screen):
         return self.loading_model(reflectance_scaled, model_path, model_shape)
 
     def capture_model(self, final_reflectance):
+        final_reflectance = final_reflectance.reshape(-1, 1)
         X_train = np.array(self.data.iloc[:, 4:92]).astype(np.float32) 
         reflectance_scaled = self.standardize_column(X_train , np.array(final_reflectance[:92]).astype(np.float32))
         
