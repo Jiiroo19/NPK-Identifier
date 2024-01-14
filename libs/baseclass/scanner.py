@@ -191,7 +191,7 @@ class Scanner(Screen):
         
         return first_derivative_padded
 
-    def capture_potassium(self, reflectance, model_path, model_shape):
+    def capture_with_derivatives(self, reflectance, model_path, model_shape):
         first_der_features = self.calculate_first_derivative(np.array(self.data.iloc[:, 4:]).astype(np.float32))
         first_der_reflectance = self.calculate_first_derivative(reflectance)
 
@@ -209,10 +209,10 @@ class Scanner(Screen):
         output_data_OM = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 92)
 
         # load lite model of P
-        output_data_P = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 92)
+        output_data_P = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 92)
 
         # load lite model of K
-        output_data_K  = self.capture_potassium(final_reflectance.reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
+        output_data_K  = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
 
         return output_data_OM, output_data_P, output_data_K
         # return output_data_OM, output_data_P, None
