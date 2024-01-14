@@ -169,7 +169,7 @@ class Scanner(Screen):
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
 
-        input_data = reflectance_scaled.astype(np.float32).reshape(1, model_shape)
+        input_data = reflectance_scaled.astype(np.float32).reshape(-1, 1)
         interpreter.set_tensor(input_details[0]['index'], input_data)
 
         interpreter.invoke()
