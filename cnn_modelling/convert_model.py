@@ -31,7 +31,7 @@ unknown_P = unkwown["Phosphorus (P), ppm"]
 unknown_K = unkwown["Potassium [K], ppm"]
 
 # 0 = OM, 1 = P, 2 = K
-target_what = 0
+target_what = 1
 if target_what == 0:
   target_val = target_OM
   target_unk = unknown_OM
