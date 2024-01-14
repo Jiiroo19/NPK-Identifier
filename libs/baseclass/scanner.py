@@ -212,7 +212,7 @@ class Scanner(Screen):
         output_data_P = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 92)
 
         # load lite model of K
-        output_data_K  = self.capture_potassium(final_reflectance, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
+        output_data_K  = self.capture_potassium(final_reflectance.reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
 
         return output_data_OM, output_data_P, output_data_K
         # return output_data_OM, output_data_P, None
