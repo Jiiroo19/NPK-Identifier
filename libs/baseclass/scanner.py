@@ -127,7 +127,7 @@ class Scanner(Screen):
         # Apply Savitzky-Golay filter
         window_length = 5  # Adjust for desired smoothing level
         polyorder = 2  # Polynomial order (often 2 or 3 for spectroscopy)
-        self.conn.close()
+        
         return savgol_filter(reflectance_mult, window_length, polyorder)
     
     def set_touch_mode(self,mode):
