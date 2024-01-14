@@ -209,7 +209,7 @@ class Scanner(Screen):
         output_data_OM = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 92)
 
         # load lite model of P
-        output_data_P = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 92)
+        output_data_P = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 256)
 
         # load lite model of K
         output_data_K  = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
