@@ -15,6 +15,7 @@ import tensorflow as tf
 import tflite_runtime.interpreter as tflite
 from sklearn.preprocessing import StandardScaler
 from scipy.signal import savgol_filter
+from sklearn.model_selection import train_test_split
 
 import RPi.GPIO as GPIO
 
@@ -192,18 +193,21 @@ class Scanner(Screen):
         return first_derivative_padded
 
     def capture_with_derivatives(self, reflectance, model_path, model_shape):
-        first_der_features = self.calculate_first_derivative(np.array(self.data.iloc[:, 4:]).astype(np.float32))
+        x_cal, x_tuning = train_test_split(np.array(self.data.iloc[:, 4:]).astype(np.float32), test_size=0.33, random_state=42)
+
+
+        first_der_features = self.calculate_first_derivative(x_cal.astype(np.float32))
         first_der_reflectance = self.calculate_first_derivative(reflectance)
 
-        der_features = np.concatenate((np.array(self.data.iloc[:, 4:]).astype(np.float32), first_der_features), axis=1)
+        der_features = np.concatenate((x_cal.astype(np.float32), first_der_features), axis=1)
         der_reflectance = np.concatenate((reflectance, first_der_reflectance), axis=1)
 
         reflectance_scaled = self.standardize_column(der_features, der_reflectance)
         return self.loading_model(reflectance_scaled, model_path, model_shape)
 
     def capture_model(self, final_reflectance):
-        X_train = np.array(self.data.iloc[:, 4:96]).astype(np.float32) 
-        reflectance_scaled = self.standardize_column(X_train , np.array(final_reflectance[:92]).astype(np.float32).reshape(1, -1))
+        # X_train = np.array(self.data.iloc[:, 4:96]).astype(np.float32) 
+        # reflectance_scaled = self.standardize_column(X_train , np.array(final_reflectance[:92]).astype(np.float32).reshape(1, -1))
         
         # the code is being run by root the reason for this hardcoded directory
         output_data_OM = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 256)
