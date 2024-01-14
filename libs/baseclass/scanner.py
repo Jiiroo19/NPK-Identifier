@@ -202,7 +202,7 @@ class Scanner(Screen):
         return self.loading_model(reflectance_scaled, model_path, model_shape)
 
     def capture_model(self, final_reflectance):
-        final_reflectance = final_reflectance.reshape(-1, 1)
+        final_reflectance = final_reflectance.reshape(1, -1)
         X_train = np.array(self.data.iloc[:, 4:96]).astype(np.float32) 
         reflectance_scaled = self.standardize_column(X_train , np.array(final_reflectance[:92]).astype(np.float32))
         
