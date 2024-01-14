@@ -179,7 +179,7 @@ class Scanner(Screen):
     def standardize_column(self, X_train, features):
         ## We train the scaler on the full train set and apply it to the other datasets
         scaler = StandardScaler().fit(X_train)
-        features_scaled = scaler.transform(features)
+        features_scaled = scaler.transform(features.reshape(-1, 1))
         return features_scaled
 
     def calculate_first_derivative(self, features):
