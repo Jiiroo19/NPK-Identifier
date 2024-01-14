@@ -206,7 +206,7 @@ class Scanner(Screen):
         reflectance_scaled = self.standardize_column(X_train , np.array(final_reflectance[:92]).astype(np.float32).reshape(1, -1))
         
         # the code is being run by root the reason for this hardcoded directory
-        output_data_OM = self.loading_model(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 256)
+        output_data_OM = self.capture_with_derivatives(final_reflectance.astype(np.float32).reshape(1, -1), "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 256)
 
         # load lite model of P
         output_data_P = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 92)
