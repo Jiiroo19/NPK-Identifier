@@ -169,7 +169,7 @@ class Scanner(Screen):
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
 
-        input_data = reflectance_scaled.astype(np.float32).reshape(-1, 1)
+        input_data = reflectance_scaled.astype(np.float32).reshape(-1, model_shape)
         interpreter.set_tensor(input_details[0]['index'], input_data)
 
         interpreter.invoke()
@@ -203,7 +203,7 @@ class Scanner(Screen):
 
     def capture_model(self, final_reflectance):
         final_reflectance = final_reflectance.reshape(-1, 1)
-        X_train = np.array(self.data.iloc[:, 4:92]).astype(np.float32) 
+        X_train = np.array(self.data.iloc[:, 4:96]).astype(np.float32) 
         reflectance_scaled = self.standardize_column(X_train , np.array(final_reflectance[:92]).astype(np.float32))
         
         # the code is being run by root the reason for this hardcoded directory
