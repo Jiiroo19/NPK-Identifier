@@ -8,8 +8,6 @@ import subprocess
 Builder.load_file('./libs/kv/lobby.kv')
 
 
-
-
 class Lobby(Screen):
     dialog = None
 
@@ -47,4 +45,3 @@ class Lobby(Screen):
 
         # this will shutdown the device
         subprocess.call(['sudo', 'shutdown', '-h', 'now'])
-

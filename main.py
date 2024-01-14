@@ -1,5 +1,4 @@
 from kivy.config import Config
-from kivy.utils import rgba
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from libs.baseclass import lobby, calibrate_light, calibrate_bg, calibrate_dark, scanner

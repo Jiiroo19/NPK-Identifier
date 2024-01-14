@@ -54,5 +54,4 @@ class GraphGenerator(object):
         self.ax1.grid(True)
         self.ax1.patch.set_edgecolor('black')  
         self.ax1.patch.set_linewidth(1) 
-        
-                
+              

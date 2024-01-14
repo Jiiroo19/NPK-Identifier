@@ -15,23 +15,23 @@ import os
 import random
 
 # load csv files containing spectral data
-data = pd.read_csv("./Training_Set_956_1500.csv")
-unkwown = pd.read_csv("./Test_set_956_1500.csv")
+data = pd.read_csv("./TrainingSets.csv")
+unkwown = pd.read_csv("./TestSets.csv")
 
 # Separate features (spectral data) and target variables (OM, P, K)
-features = np.array(data.iloc[:, 4:].values)
+features = np.array(data.iloc[:, 5:].values)
 target_OM = data["Organic Matter (OM), %"]
 target_P = data["Phosphorus (P), ppm"]
 target_K = data["Potassium [K], ppm"]
 
 #unknown
-unknown_features = np.array(unkwown.iloc[:, 4:].values)
+unknown_features = np.array(unkwown.iloc[:, 5:].values)
 unknown_OM = unkwown["Organic Matter (OM), %"]
 unknown_P = unkwown["Phosphorus (P), ppm"]
 unknown_K = unkwown["Potassium [K], ppm"]
 
 # 0 = OM, 1 = P, 2 = K
-target_what = 0
+target_what = 2
 if target_what == 0:
   target_val = target_OM
   target_unk = unknown_OM
@@ -53,13 +53,32 @@ else:
   model_dir = "./models/final_regression_model_K.h5"
   convert_lite = "./final_regression_model_K.tflite"
 
+def calculate_first_derivative(features):
+    # Compute the first derivative of the spectra along the wavelength axis
+    first_derivative = np.diff(features, n=1, axis=1)
+    
+    # Pad the result with zeros to match the original number of features
+    first_derivative_padded = np.pad(first_derivative, ((0, 0), (0, 1)), 'constant', constant_values=0)
+    
+    return first_derivative_padded
 
-scaler = StandardScaler()
-features_scaled = scaler.fit_transform(features)
-unknown_features = scaler.fit_transform(unknown_features)
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(features_scaled, target_val, test_size=0.2, random_state=42)
+def standardize_column(X_train, X_test):
+    ## We train the scaler on the full train set and apply it to the other datasets
+    scaler = StandardScaler().fit(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    return X_test_scaled
+
+first_derivative_features = calculate_first_derivative(features)
+first_derivative_test = calculate_first_derivative(unknown_features)
+
+features_with_derivatives = np.concatenate((features, first_derivative_features), axis=1)
+unknown_features_with_derivatives = np.concatenate((unknown_features, first_derivative_test), axis=1)
+
+
+unknown_features = standardize_column(features_with_derivatives, unknown_features_with_derivatives)
+print(unknown_features.shape)
+
 
 
 ## Define random seeds ir order to maintain reproducible results through multiple testing phases
@@ -96,20 +115,20 @@ print(input_details)
 # Sample input data
 pred = []
 for sample in unknown_features:
-  input_data = sample.astype(np.float32).reshape(1, 92)
+  input_data = sample.astype(np.float32).reshape(1, 256)
   interpreter.set_tensor(input_details[0]['index'], input_data)
 
   # Run inference
   interpreter.invoke()
 
-  # Get output data
+  # Get output data7
   output_data = interpreter.get_tensor(output_details[0]['index'])
 
   # Print output (modify as needed for your model's output format)
   pred.append(output_data[0])
 
 # test unknown predection
-print(pred)
+
 print("Unknown")
 mse = mean_squared_error(target_unk, pred)
 r2 = r2_score(target_unk, pred)

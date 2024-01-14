@@ -11,7 +11,6 @@ import sqlite3
 import RPi.GPIO as GPIO
 
 
-
 Builder.load_file('./libs/kv/calibrate_bg.kv')
 
 
@@ -23,7 +22,7 @@ class CalibrateBG(Screen):
 
     def on_enter(self, *args):
 
-        # set the lights to high
+        # set the lights to low (turn off)
         GPIO.output(12, GPIO.LOW)
 
         self.conn = sqlite3.connect('spectral_calib.db')
@@ -54,9 +53,6 @@ class CalibrateBG(Screen):
         mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt2.home()
-
-        
-       
         Clock.schedule_interval(self.update_graph,.1)
     
     # Function to delete existing data of a certain type

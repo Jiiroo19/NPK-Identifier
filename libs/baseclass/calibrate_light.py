@@ -51,9 +51,6 @@ class CalibrateLight(Screen):
         mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt3.home()
-
-        
-       
         Clock.schedule_interval(self.update_graph,.1)
 
     # Function to delete existing data of a certain type

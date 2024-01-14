@@ -39,7 +39,6 @@ class CalibrateDark(Screen):
         self.spec = MDApp.get_running_app().spec
 
         mygraph = GraphGenerator()
-        
         self.figure_wgt1.figure = mygraph.fig
         self.figure_wgt1.axes = mygraph.ax1
 
@@ -52,9 +51,6 @@ class CalibrateDark(Screen):
         mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt1.home()
-
-        
-       
         Clock.schedule_interval(self.update_graph,.1)
     
     # Function to delete existing data of a certain type
@@ -110,4 +106,3 @@ class CalibrateDark(Screen):
         self.ids['rescan_dark'].disabled = True
         self.conn.close()
         return super().on_leave(*args)
-

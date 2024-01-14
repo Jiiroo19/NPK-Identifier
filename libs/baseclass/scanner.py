@@ -9,6 +9,7 @@ import numpy as np
 import sqlite3
 import os
 import random
+import pandas as pd
 
 import tensorflow as tf
 import tflite_runtime.interpreter as tflite
@@ -16,6 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from scipy.signal import savgol_filter
 
 import RPi.GPIO as GPIO
+
 
 Builder.load_file('./libs/kv/scanner.kv')
 
@@ -32,12 +34,14 @@ class Scanner(Screen):
 
 
     def on_enter(self, *args):
+        self.data = pd.read_csv("/home/stardust/NPK-Identifier/assets/datasets/TrainingSets.csv")
+
         self.label_OM.text = "OM: - %"
         self.label_N.text = "N: - ppm"
         self.label_P.text = "P: - ppm"
         self.label_K.text = "K: - ppm"
 
-        # set the lights to high
+        # set the lights to high (turn on)
         GPIO.output(12, GPIO.HIGH)
 
         # initialize database
@@ -55,15 +59,17 @@ class Scanner(Screen):
         # access the NIR
         self.spec = MDApp.get_running_app().spec
 
+        #access the GraphGenerator() to create the initial graph
         mygraph = GraphGenerator()
         
+        #initialize the state of the button upon entering the screen
         self.ids['rescan_button'].disabled = True
         self.ids['capture_button'].disabled = False
 
         self.figure_wgt4.figure = mygraph.fig
         self.figure_wgt4.axes = mygraph.ax1
 
-        # get initial spectral data
+        # get initial spectral data and update the graph
         self.figure_wgt4.xmin= np.min(self.spec.wavelengths())
         self.figure_wgt4.xmax = np.max(self.spec.wavelengths())
         self.figure_wgt4.ymin=np.min(self.spec.intensities(False,True))
@@ -72,9 +78,9 @@ class Scanner(Screen):
         mygraph.line1.set_color('red')
         self.home()
         self.figure_wgt4.home()
-       
         Clock.schedule_interval(self.update_graph,.1)
 
+    # get the data stored in the database
     def get_data(self, data_type):
         self.cursor.execute('''
             SELECT data FROM SpectralData WHERE type = ?
@@ -90,7 +96,7 @@ class Scanner(Screen):
     def cal_nitrogen(self, organic_matter):
         return (((organic_matter/100) * 0.03) * 0.2) * 10000
         
-    
+    # calculation to convert or calculate the reflectance from intensity
     def reflectance_cal(self, sample_intensities):
         dark_data_retrieved = self.get_data('dark')
         light_data_retrieved = self.get_data('light')
@@ -116,7 +122,8 @@ class Scanner(Screen):
 
     def home(self):
         self.figure_wgt4.home()
-        
+
+    #update the content of the graph   
     def update_graph(self,_):
         xdata= self.spec.wavelengths()
         intensities = self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32))
@@ -129,10 +136,12 @@ class Scanner(Screen):
         self.figure_wgt4.figure.canvas.draw_idle()
         self.figure_wgt4.figure.canvas.flush_events() 
     
+    # if a button is press it will reverse the state of the buttons
     def activate_button(self):
         self.ids['rescan_button'].disabled = not self.ids['rescan_button'].disabled
         self.ids['capture_button'].disabled = not self.ids['capture_button'].disabled
 
+    # this will stop the scheduled task and get the final reflectance and update the labels
     def disable_clock(self):
         output_data_OM, output_data_P, output_data_K = self.capture_model(self.reflectance_cal(np.array(self.spec.intensities(False,True), dtype=np.float32)))
         
@@ -144,7 +153,8 @@ class Scanner(Screen):
 
         Clock.unschedule(self.update_graph)
 
-    def loading_model(self, reflectance_scaled, model_path):
+    # this will load the tflite saved model
+    def loading_model(self, reflectance_scaled, model_path, model_shape):
         tf.keras.backend.clear_session()
 
         os.environ['PYTHONHASHSEED'] = '0'
@@ -159,35 +169,54 @@ class Scanner(Screen):
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
 
-        input_data = reflectance_scaled.astype(np.float32).reshape(1, 92)
+        input_data = reflectance_scaled.astype(np.float32).reshape(1, model_shape)
         interpreter.set_tensor(input_details[0]['index'], input_data)
 
         interpreter.invoke()
 
         return interpreter.get_tensor(output_details[0]['index'])
+    
+    def standardize_column(X_train, features):
+        ## We train the scaler on the full train set and apply it to the other datasets
+        scaler = StandardScaler().fit(X_train)
+        features_scaled = scaler.transform(features)
+        return features_scaled
+
+    def calculate_first_derivative(features):
+        # Compute the first derivative of the spectra along the wavelength axis
+        first_derivative = np.diff(features, n=1, axis=1)
+        
+        # Pad the result with zeros to match the original number of features
+        first_derivative_padded = np.pad(first_derivative, ((0, 0), (0, 1)), 'constant', constant_values=0)
+        
+        return first_derivative_padded
+
+    def capture_potassium(self, reflectance, model_path, model_shape):
+        first_der_features = self.calculate_first_derivative(self.data.iloc[:, 4:])
+        first_der_reflectance = self.calculate_first_derivative(reflectance)
+
+        der_features = np.concatenate((self.data.iloc[:, 4:], first_der_features), axis=1)
+        der_reflectance = np.concatenate((reflectance, first_der_reflectance), axis=1)
+
+        reflectance_scaled = self.standardize_column(der_features, der_reflectance)
+        return self.loading_model(reflectance_scaled, model_path, model_shape)
 
     def capture_model(self, final_reflectance):
-        final_reflectance = final_reflectance[:92]
-        print(final_reflectance)
-
-        scaler = StandardScaler()
-        # input_data = np.array((final_reflectance), dtype = np.float32).reshape(1, 128)
-        # Reshape to 2D for StandardScaler
-        reshaped_input_data = final_reflectance.reshape(-1, 1)
-        reflectance_scaled = scaler.fit_transform(reshaped_input_data)
-
-        output_data_OM = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite")
+        reflectance_scaled = self.standardize_column(self.data.iloc[:, 4:92],final_reflectance[:92])
+        
+        # the code is being run by root the reason for this hardcoded directory
+        output_data_OM = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 92)
 
         # load lite model of P
-        output_data_P = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite")
+        output_data_P = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_P.tflite", 92)
 
         # load lite model of K
-        output_data_K  = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite")
+        output_data_K  = self.capture_potassium(final_reflectance, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_K.tflite", 256)
 
         return output_data_OM, output_data_P, output_data_K
         # return output_data_OM, output_data_P, None
 
-
+    # set of process upon leaving the screen
     def on_leave(self, *args):
         self.ids['rescan_button'].disabled = True
         self.ids['capture_button'].disabled = False
