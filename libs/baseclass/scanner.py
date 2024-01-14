@@ -191,7 +191,7 @@ class Scanner(Screen):
         
         return first_derivative_padded
 
-    def capture_potassium(self, reflectance, model_path, model_shape):
+    def capture_with_derivatives(self, reflectance, model_path, model_shape):
         first_der_features = self.calculate_first_derivative(np.array(self.data.iloc[:, 4:]).astype(np.float32))
         first_der_reflectance = self.calculate_first_derivative(reflectance)
 
