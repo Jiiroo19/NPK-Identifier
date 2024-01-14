@@ -37,9 +37,16 @@ class Scanner(Screen):
         random.seed(42)
         tf.random.set_seed(42)
 
+        self.data = pd.read_csv("/home/stardust/NPK-Identifier/assets/datasets/TrainingSets.csv")
+        features = self.data.iloc[:, 4:].values
+        first_der_features = self.calculate_first_derivative(features)
+        der_features = np.concatenate((features, first_der_features), axis=1)
+        self.scaler = StandardScaler().fit(der_features)
+
+
 
     def on_enter(self, *args):
-        self.data = pd.read_csv("/home/stardust/NPK-Identifier/assets/datasets/TrainingSets.csv")
+        
 
         self.label_OM.text = "OM: - %"
         self.label_N.text = "N: - ppm"
@@ -176,10 +183,9 @@ class Scanner(Screen):
 
         return interpreter.get_tensor(output_details[0]['index'])
     
-    def standardize_column(self, X_train, features):
+    def standardize_column(self, features):
         ## We train the scaler on the full train set and apply it to the other datasets
-        scaler = StandardScaler().fit(X_train)
-        features_scaled = scaler.transform(features)
+        features_scaled = self.scaler.transform(features)
         return features_scaled
 
     def calculate_first_derivative(self, features):
@@ -193,16 +199,13 @@ class Scanner(Screen):
 
     def capture_with_derivatives(self, reflectance, model_path, model_shape):
         # x_cal, x_tuning = train_test_split(np.array(self.data.iloc[:, 4:]).astype(np.float32), test_size=0.33, random_state=42)
-        features = self.data.iloc[:, 4:].values
-
-
-        first_der_features = self.calculate_first_derivative(features)
+        
         first_der_reflectance = self.calculate_first_derivative(reflectance)
 
-        der_features = np.concatenate((features, first_der_features), axis=1)
+        
         der_reflectance = np.concatenate((reflectance, first_der_reflectance), axis=1)
 
-        reflectance_scaled = self.standardize_column(der_features, der_reflectance)
+        reflectance_scaled = self.standardize_column(der_reflectance)
 
         return self.loading_model(reflectance_scaled, model_path, model_shape)
 
