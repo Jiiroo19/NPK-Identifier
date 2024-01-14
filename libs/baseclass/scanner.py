@@ -192,17 +192,17 @@ class Scanner(Screen):
         return first_derivative_padded
 
     def capture_potassium(self, reflectance, model_path, model_shape):
-        first_der_features = self.calculate_first_derivative(self.data.iloc[:, 4:])
+        first_der_features = self.calculate_first_derivative(np.array(self.data.iloc[:, 4:]).astype(np.float32))
         first_der_reflectance = self.calculate_first_derivative(reflectance)
 
-        der_features = np.concatenate((self.data.iloc[:, 4:], first_der_features), axis=1)
+        der_features = np.concatenate((np.array(self.data.iloc[:, 4:]).astype(np.float32), first_der_features), axis=1)
         der_reflectance = np.concatenate((reflectance, first_der_reflectance), axis=1)
 
         reflectance_scaled = self.standardize_column(der_features, der_reflectance)
         return self.loading_model(reflectance_scaled, model_path, model_shape)
 
     def capture_model(self, final_reflectance):
-        reflectance_scaled = self.standardize_column(self.data.iloc[:, 4:92],final_reflectance[:92])
+        reflectance_scaled = self.standardize_column(np.array(self.data.iloc[:, 4:92]).astype(np.float32) , np.array(final_reflectance[:92]).astype(np.float32))
         
         # the code is being run by root the reason for this hardcoded directory
         output_data_OM = self.loading_model(reflectance_scaled, "/home/stardust/NPK-Identifier/assets/models/final_regression_model_OM.tflite", 92)
